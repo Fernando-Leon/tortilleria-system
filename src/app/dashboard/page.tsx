@@ -1,7 +1,11 @@
+import Navbar from "@/app/ui/auth/components/navbar"
 export default function page() {
     return (
         <div>
-            Bienenido al sistema.
+            <Navbar />
+            <h3 className="text-3xl font-semibold text-center p-12">
+                Bienenido al sistema.
+            </h3>
         </div>
     )
 }

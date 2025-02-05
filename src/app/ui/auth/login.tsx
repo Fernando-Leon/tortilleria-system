@@ -20,7 +20,7 @@ export default function Login() {
   const validUsername = "admin";
   const validPassword = "123456";
 
-  const handleLogin = (e) => {
+  const handleLogin = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     if (!username || !password) {
@@ -41,45 +41,45 @@ export default function Login() {
         <h2 className="text-3xl font-semibold">Inicio de sesión</h2>
       </CardHeader>
       <CardBody className="flex flex-col gap-4">
-        <Input
-          label="Nombre de usuario"
-          type="text"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
-        />
-        <Input
-          endContent={
-            <button
-              aria-label="toggle password visibility"
-              className="focus:outline-none"
-              type="button"
-              onClick={toggleVisibility}
-            >
-              {isVisible ? (
-                <EyeSlashFilledIcon className="text-2xl text-default-400 pointer-events-none" />
-              ) : (
-                <EyeFilledIcon className="text-2xl text-default-400 pointer-events-none" />
-              )}
-            </button>
-          }
-          label="Contraseña"
-          placeholder="Ingrese su contraseña"
-          type={isVisible ? "text" : "password"}
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          variant="bordered"
-        />
-        
-        {error && <p className="text-red-500 text-sm">{error}</p>}
+        <form onSubmit={handleLogin} className="flex flex-col gap-4">
+          <Input
+            label="Nombre de usuario"
+            type="text"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+          />
+          <Input
+            endContent={
+              <button
+                aria-label="toggle password visibility"
+                className="focus:outline-none"
+                type="button"
+                onClick={toggleVisibility}
+              >
+                {isVisible ? (
+                  <EyeSlashFilledIcon className="text-2xl text-default-400 pointer-events-none" />
+                ) : (
+                  <EyeFilledIcon className="text-2xl text-default-400 pointer-events-none" />
+                )}
+              </button>
+            }
+            label="Contraseña"
+            placeholder="Ingrese su contraseña"
+            type={isVisible ? "text" : "password"}
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            variant="bordered"
+          />
+          
+          {error && <p className="text-red-500 text-sm">{error}</p>}
 
-        <div className="flex flex-col items-center w-full">
           <button
-            onClick={handleLogin}
+            type="submit"
             className="w-full bg-slate-700 hover:bg-slate-800 rounded-lg text-white py-2 text-center transition"
           >
             Iniciar sesión
           </button>
-        </div>
+        </form>
       </CardBody>
     </Card>
   );

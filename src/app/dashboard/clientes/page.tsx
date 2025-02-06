@@ -4,6 +4,9 @@ export default function page() {
     return (
         <div>
             <Navbar />
+            <div className="p-6 flex gap-2">
+                <span>dashboard</span><span>&gt;</span><span>clientes</span>
+            </div>
             <h3 className="text-3xl font-semibold text-center p-12">
                 Clientes
             </h3>

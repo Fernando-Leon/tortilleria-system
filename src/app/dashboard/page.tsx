@@ -1,5 +1,5 @@
 import Link from "next/link"
-import Navbar from "@/app/ui/auth/components/navbar"
+import Navbar from "@/app/ui/components/navbar"
 export default function page() {
     return (
         <div>

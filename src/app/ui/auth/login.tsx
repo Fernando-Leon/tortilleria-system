@@ -1,52 +1,34 @@
 'use client'
 import React, { useState } from "react";
-import { useRouter } from 'next/navigation';
-
+import SvgIcon from "@/app/ui/svg/logo.jsx";
+import { login } from "@/app/lib/actions/auth/auth";
+import { toast } from "sonner";
 import { Card, CardHeader, CardBody } from "@heroui/card";    
 import { Input } from "@heroui/input";
 import EyeSlashFilledIcon from "../../../../public/svg/closeeye";
 import EyeFilledIcon from "../../../../public/svg/openeye";
 
 export default function Login() {
-  const router = useRouter();
   const [isVisible, setIsVisible] = useState(false);
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
 
   const toggleVisibility = () => setIsVisible(!isVisible);
 
-  // Credenciales estáticas
-  const validUsername = "admin";
-  const validPassword = "123456";
-
-  const handleLogin = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-
-    if (!username || !password) {
-      setError("Todos los campos son obligatorios.");
-      return;
-    }
-
-    if (username === validUsername && password === validPassword) {
-      router.push('/dashboard');
-    } else {
-      setError("Usuario o contraseña incorrectos.");
-    }
-  };
-
   return (
-    <Card className="w-full max-w-md p-6">
+    <Card className="w-full max-w-md p-6 rounded-none shadow-none bg-transparent">
       <CardHeader className="flex flex-col items-center">
+        <SvgIcon className="w-16 h-16"/>
         <h2 className="text-3xl font-semibold">Inicio de sesión</h2>
       </CardHeader>
       <CardBody className="flex flex-col gap-4">
-        <form onSubmit={handleLogin} className="flex flex-col gap-4">
+        <form action={ async formData => {
+          const response = await login(formData);
+          toast.error(response.error);
+          console.log(response);
+        }} className="flex flex-col gap-4">
           <Input
             label="Nombre de usuario"
             type="text"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
+            name="username"
           />
           <Input
             endContent={
@@ -66,19 +48,17 @@ export default function Login() {
             label="Contraseña"
             placeholder="Ingrese su contraseña"
             type={isVisible ? "text" : "password"}
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
+            name="password"
             variant="bordered"
           />
-          
-          {error && <p className="text-red-500 text-sm">{error}</p>}
 
           <button
             type="submit"
-            className="w-full bg-slate-700 hover:bg-slate-800 rounded-lg text-white py-2 text-center transition"
+            className="w-full bg-colorPrimary hover:bg-colorContrast rounded-lg text-white py-2 text-center transition"
           >
             Iniciar sesión
           </button>
+          <label className="text-slate-500 text-right">Next.js + Nest.js</label>
         </form>
       </CardBody>
     </Card>

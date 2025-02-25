@@ -1,20 +1,12 @@
 import { LayoutPage } from "@/app/ui/components/LayoutPage";
 import { FormUpdateUser } from "@/app/ui/users/form-update-user";
 
-type Params = {
-  idUser: string;
+type Props = {
+  params: Promise<{ idUser: string }>;
 };
 
-type PageProps = {
-  params: Params;
-};
-
-export default function Page({ params }: PageProps) {
-  const { idUser } = params;
-
-  if (!idUser) {
-    return <p>Error: El ID del usuario no está definido.</p>;
-  }
+export default async function Page({ params }: Props) {
+  const { idUser } = await params;
 
   return (
     <LayoutPage>

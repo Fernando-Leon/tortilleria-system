@@ -1,7 +1,15 @@
 import { LayoutPage } from "@/app/ui/components/LayoutPage";
 import { FormUpdateUser } from "@/app/ui/users/form-update-user";
 
-export default function Page({ params }: { params: { idUser: string } }) {
+type Params = {
+  idUser: string;
+};
+
+type PageProps = {
+  params: Params;
+};
+
+export default function Page({ params }: PageProps) {
   const { idUser } = params;
 
   if (!idUser) {

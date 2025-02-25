@@ -7,6 +7,7 @@ import { Card, CardHeader, CardBody } from "@heroui/card";
 import { Input } from "@heroui/input";
 import EyeSlashFilledIcon from "../../../../public/svg/closeeye";
 import EyeFilledIcon from "../../../../public/svg/openeye";
+import { Button } from "@heroui/react";
 
 export default function Login() {
   const [isVisible, setIsVisible] = useState(false);
@@ -52,12 +53,13 @@ export default function Login() {
             variant="bordered"
           />
 
-          <button
+          <Button
             type="submit"
-            className="w-full bg-colorPrimary hover:bg-colorContrast rounded-lg text-white py-2 text-center transition"
+            color="primary"
+            className="w-full text-white py-2 text-center transition"
           >
             Iniciar sesión
-          </button>
+          </Button>
           <label className="text-slate-500 text-right">Next.js + Nest.js</label>
         </form>
       </CardBody>

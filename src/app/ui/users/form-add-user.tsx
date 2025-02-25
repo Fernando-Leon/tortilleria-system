@@ -1,28 +1,33 @@
-"use client";
-import { addNewUser } from "@/app/lib/actions/users/user";
+'use client';
+
+import React, { useState } from "react";
+import { useActionState } from "react";
 import { getCatalogSex } from "@/app/lib/actions/catalogs/catalogs";
-import { toast } from "sonner";
-import { useActionState, useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import { submitNewUser } from "@/app/lib/actions/users/user";
 import {
   Button,
   Input,
-  Select,
-  SelectItem,
   Card,
   CardHeader,
   CardBody,
-  Form,
+  Select,
+  SelectItem,
 } from "@heroui/react";
+import type { ActionResponse } from "@/app/types/user";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
+import { toast } from "sonner";
 
-const initialState = {
-  status: "",
+const initialState: ActionResponse = {
+  success: false,
   message: "",
-  errors: {},
 };
 
-export default function FormAddUser() {
-  const [state, formAction, pending] = useActionState(addNewUser, initialState);
+export default function NewUserForm() {
+  const [state, action, isPending] = useActionState(
+    submitNewUser,
+    initialState
+  );
   const [sexOptions, setSexOptions] = useState<{ id: number; name: string }[]>(
     []
   );
@@ -37,70 +42,115 @@ export default function FormAddUser() {
   }, []);
 
   useEffect(() => {
-    if (state.status === "success") {
-      toast.success(state.message, {
-        duration: 4000,
-      });
+    if (state.success) {
+      toast.success(state.message);
       router.push("/dashboard/users");
-    } else if (state.status === "error") {
-      toast.error(state.message);
     }
-  }, [state, router]);
+  }, [state.success, state.message, router]);
 
   return (
     <Card className="p-4 w-1/2">
       <CardHeader className="flex gap-3">
-        <h2 className="text-xl font-semibold text-center w-full">Nuevo usuario</h2>
+        <h2 className="text-lg font-semibold text-center">Agregar usuario</h2>
       </CardHeader>
       <CardBody>
-        <Form className="flex flex-col gap-4 w-full" action={formAction}>
-          <Input
-            isRequired
-            type="text"
-            id="name"
-            name="name"
-            placeholder="Nombre"
-          />
-          {state.errors?.name && (
-            <p className="text-red-500 text-xs mt-1">{state.errors.name[0]}</p>
-          )}
-
-          <Input type="text" name="lastname" placeholder="Apellido" isRequired />
-          {state.errors?.lastname && (
-            <p className="text-red-500 text-xs mt-1">
-              {state.errors.lastname[0]}
-            </p>
-          )}
-
-          <Input type="email" name="mail" placeholder="Email" isRequired />
-          {state.errors?.mail && (
-            <p className="text-red-500 text-xs mt-1">{state.errors.mail[0]}</p>
-          )}
-
-          <Select
-            label="Sex"
-            name="sexId"
-            isRequired
-            errorMessage={state.errors?.sexId?.[0]}
-          >
-            {sexOptions.map((sex) => (
-              <SelectItem key={sex.id} value={sex.id.toString()}>
-                {sex.name}
-              </SelectItem>
-            ))}
-          </Select>
-          {state.errors?.sexId && (
-            <p className="text-red-500 text-xs mt-1">{state.errors.sexId[0]}</p>
-          )}
-          <div className="w-full flex justify-end gap-2">
-            <Button size="md" color="secondary" onPress={() => router.push("/dashboard/users")}>
-              Regresar
-            </Button>
-            <Button className="" type="submit" size="md" color="primary" isLoading={pending}>
-              {pending ? "Guardando..." : "Guardar"}
-            </Button>
+        <form
+          action={action}
+          className="flex flex-col gap-4 w-full"
+          autoComplete="on"
+        >
+          <div className="space-y-2">
+            <label htmlFor="name">Nombre</label>
+            <Input
+              id="name"
+              name="name"
+              placeholder="Fernando"
+              minLength={2}
+              maxLength={20}
+              aria-describedby="name-error"
+              required
+              size="sm"
+              className={state?.errors?.name ? "border-red-500" : ""}
+            />
+            {state?.errors?.name && (
+              <p id="name-error" className="text-sm text-red-500">
+                {state.errors.name[0]}
+              </p>
+            )}
           </div>
-        </Form>
+
+          <div className="space-y-2">
+            <label htmlFor="lastname">Apellido</label>
+            <Input
+              id="lastname"
+              name="lastname"
+              placeholder="Leon"
+              minLength={2}
+              maxLength={20}
+              size="sm"
+              aria-describedby="lastname-error"
+              required
+            />
+            {state?.errors?.lastname && (
+              <p id="name-error" className="text-sm text-red-500">
+                {state.errors.lastname[0]}
+              </p>
+            )}
+          </div>
+
+          <div className="space-y-2">
+            <label htmlFor="mail">Correo electronico</label>
+            <Input
+              id="mail"
+              name="mail"
+              placeholder="correo@correo.com"
+              type="email"
+              required
+              size="sm"
+              minLength={2}
+              maxLength={50}
+              aria-describedby="mail-error"
+              className={state?.errors?.mail ? "border-red-500" : ""}
+            />
+            {state?.errors?.mail && (
+              <p id="mail-error" className="text-sm text-red-500">
+                {state.errors.mail[0]}
+              </p>
+            )}
+          </div>
+
+          <div className="space-y-2">
+            <label htmlFor="sexId">Sexo</label>
+            <Select
+              placeholder="Selecciona un sexo"
+              size="sm"
+              id="sexId"
+              name="sexId"
+              isRequired
+              className={state?.errors?.sexId ? "border-red-500" : ""}
+            >
+              {sexOptions.map((sex) => (
+                <SelectItem key={sex.id} value={sex.id.toString()}>
+                  {sex.name}
+                </SelectItem>
+              ))}
+            </Select>
+            {state?.errors?.sexId && (
+              <p id="state-error" className="text-sm text-red-500">
+                {state.errors.sexId[0]}
+              </p>
+            )}
+          </div>
+          <Button
+            type="submit"
+            color="primary"
+            size="sm"
+            className="mt-4"
+            isLoading={isPending}
+          >
+            {isPending ? "Agregando..." : "Agregar"}
+          </Button>
+        </form>
       </CardBody>
     </Card>
   );

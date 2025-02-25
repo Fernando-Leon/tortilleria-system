@@ -12,6 +12,7 @@ import {
   Link,
   Button,
 } from "@heroui/react";
+import SwitchMode from "@/app/ui/components/SwitchMode"
 
 export default function NavBar() {
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
@@ -63,6 +64,9 @@ export default function NavBar() {
             Sign Up
           </Button>
         </NavbarItem>
+      </NavbarContent>
+      <NavbarContent>
+        <SwitchMode />
       </NavbarContent>
       <NavbarMenu>
         {menuItems.map((item, index) => (

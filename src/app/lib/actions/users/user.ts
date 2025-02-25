@@ -58,7 +58,7 @@ export async function submitNewUser(prevState: ActionResponse | null, formData: 
 }
 
 
-//Update user
+//Update user for depply
 export async function updateUser(prevState: ActionResponseUpdate | null, formData: FormData): Promise<ActionResponseUpdate> {
   await new Promise((resolve) => setTimeout(resolve, 200))
 

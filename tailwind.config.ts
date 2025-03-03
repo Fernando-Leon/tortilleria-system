@@ -24,6 +24,13 @@ export default {
   plugins: [
     heroui({
       addCommonColors: true,
+      layout: {
+        radius: {
+          small: "3px", // rounded-small
+          medium: "6px", // rounded-medium
+          large: "10px", // rounded-large
+        },
+      },
       themes: {
         light: {
           // ...
@@ -32,7 +39,7 @@ export default {
             foreground: "#11181C", // or 50 to 900 DEFAULT
             primary: {
               foreground: "#FFFFFF",
-              DEFAULT: "#006FEE",
+              DEFAULT: "#000000",
             },
           },
         },
@@ -40,11 +47,11 @@ export default {
           // ...
           colors: {
             background: "#000000", // or DEFAULT
-            foreground: "#ECEDEE", // or 50 to 900 DEFAULT
+            foreground: "#FFFFFF", // or 50 to 900 DEFAULT
             primary: {
               //... 50 to 900
-              foreground: "#FFFFFF",
-              DEFAULT: "#006FEE",
+              foreground: "#000000",
+              DEFAULT: "#FFFFFF",
             },
           },
         },

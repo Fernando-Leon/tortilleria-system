@@ -1,5 +1,5 @@
 import { LayoutPage } from "@/app/ui/components/LayoutPage";
-import NewUserForm from "@/app/ui/users/form-add-user"
+import NewUserForm from "@/app/ui/users/create-user-form"
 
 export default function page() {
   return (

@@ -72,7 +72,7 @@ export const FormUpdateUser: React.FC<FormUpdateUserProps> = ({ idUser }) => {
   return (
     <Card className="p-4 w-1/2">
       <CardHeader className="flex gap-3">
-        <h2 className="text-lg font-semibold text-center">
+        <h2 className="text-2XL font-semibold text-center">
           Actualizar usuario
         </h2>
       </CardHeader>
@@ -86,8 +86,8 @@ export const FormUpdateUser: React.FC<FormUpdateUserProps> = ({ idUser }) => {
               minLength={2}
               maxLength={20}
               aria-describedby="name-error"
+              variant="bordered"
               required
-              size="sm"
               type="hidden"
               value={idUser}
             />
@@ -101,7 +101,6 @@ export const FormUpdateUser: React.FC<FormUpdateUserProps> = ({ idUser }) => {
               maxLength={20}
               aria-describedby="name-error"
               required
-              size="sm"
               value={userData.name}
               onChange={(e) =>
                 setUserData((prev) => ({ ...prev, name: e.target.value }))
@@ -113,12 +112,12 @@ export const FormUpdateUser: React.FC<FormUpdateUserProps> = ({ idUser }) => {
             <Input
               id="lastname"
               name="lastname"
+              variant="bordered"
               placeholder="Leon"
               minLength={2}
               maxLength={20}
               aria-describedby="lastname-error"
               required
-              size="sm"
               value={userData.lastname}
               onChange={(e) =>
                 setUserData((prev) => ({ ...prev, lastname: e.target.value }))
@@ -130,12 +129,12 @@ export const FormUpdateUser: React.FC<FormUpdateUserProps> = ({ idUser }) => {
             <Input
               id="mail"
               name="mail"
+              variant="bordered"
               placeholder="Leon"
               minLength={2}
               maxLength={20}
               aria-describedby="mail-error"
               required
-              size="sm"
               value={userData.mail}
               onChange={(e) =>
                 setUserData((prev) => ({ ...prev, mail: e.target.value }))
@@ -144,8 +143,8 @@ export const FormUpdateUser: React.FC<FormUpdateUserProps> = ({ idUser }) => {
           </div>
           <Select
             label="Sex"
+            variant="bordered"
             name="sexId"
-            size="sm"
             isRequired
             selectedKeys={[userData.sexId.toString()]}
             onSelectionChange={(keys) =>
@@ -165,10 +164,9 @@ export const FormUpdateUser: React.FC<FormUpdateUserProps> = ({ idUser }) => {
           <Button
             type="submit"
             color="primary"
-            size="sm"
             isLoading={isPending}
           >
-            {isPending ? "Updating..." : "Update User"}
+            {isPending ? "Actualizando..." : "Actualizar"}
           </Button>
         </form>
       </CardBody>

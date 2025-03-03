@@ -51,7 +51,7 @@ export default function NewUserForm() {
   return (
     <Card className="p-4 w-1/2">
       <CardHeader className="flex gap-3">
-        <h2 className="text-lg font-semibold text-center">Agregar usuario</h2>
+        <h2 className="text-2xl font-semibold text-center">Agregar usuario</h2>
       </CardHeader>
       <CardBody>
         <form
@@ -68,8 +68,8 @@ export default function NewUserForm() {
               minLength={2}
               maxLength={20}
               aria-describedby="name-error"
+              variant="bordered"
               required
-              size="sm"
               className={state?.errors?.name ? "border-red-500" : ""}
             />
             {state?.errors?.name && (
@@ -84,10 +84,10 @@ export default function NewUserForm() {
             <Input
               id="lastname"
               name="lastname"
+              variant="bordered"
               placeholder="Leon"
               minLength={2}
               maxLength={20}
-              size="sm"
               aria-describedby="lastname-error"
               required
             />
@@ -104,9 +104,8 @@ export default function NewUserForm() {
               id="mail"
               name="mail"
               placeholder="correo@correo.com"
-              type="email"
+              variant="bordered"
               required
-              size="sm"
               minLength={2}
               maxLength={50}
               aria-describedby="mail-error"
@@ -123,14 +122,14 @@ export default function NewUserForm() {
             <label htmlFor="sexId">Sexo</label>
             <Select
               placeholder="Selecciona un sexo"
-              size="sm"
               id="sexId"
               name="sexId"
+              variant="bordered"
               isRequired
               className={state?.errors?.sexId ? "border-red-500" : ""}
             >
               {sexOptions.map((sex) => (
-                <SelectItem key={sex.id} value={sex.id.toString()}>
+                <SelectItem key={sex.id} value={sex.id}>
                   {sex.name}
                 </SelectItem>
               ))}
@@ -144,11 +143,10 @@ export default function NewUserForm() {
           <Button
             type="submit"
             color="primary"
-            size="sm"
             className="mt-4"
             isLoading={isPending}
           >
-            {isPending ? "Agregando..." : "Agregar"}
+            {isPending ? "Creando..." : "Crear"}
           </Button>
         </form>
       </CardBody>

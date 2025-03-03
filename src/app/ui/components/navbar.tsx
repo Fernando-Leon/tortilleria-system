@@ -1,18 +1,16 @@
-"use client"
-import SvgLogo from "@/app/ui/svg/logo"
+'use client';
 import React from "react";
+import SwitchMode from "@/app/ui/components/SwitchMode";
+import Image from "next/image";
 import {
   Navbar,
   NavbarBrand,
-  NavbarContent,
   NavbarItem,
   NavbarMenuToggle,
   NavbarMenu,
   NavbarMenuItem,
   Link,
-  Button,
 } from "@heroui/react";
-import SwitchMode from "@/app/ui/components/SwitchMode"
 
 export default function NavBar() {
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
@@ -31,50 +29,59 @@ export default function NavBar() {
   ];
 
   return (
-    <Navbar onMenuOpenChange={setIsMenuOpen}>
-      <NavbarContent>
+    <Navbar
+      onMenuOpenChange={setIsMenuOpen}
+      className="w-full pl-20 pr-20 flex justify-start border-gray-200 border-b-1 dark:border-gray-600"
+    >
+      <div className="flex-none">
         <NavbarMenuToggle
           aria-label={isMenuOpen ? "Close menu" : "Open menu"}
           className="sm:hidden"
         />
-        <NavbarBrand>
-          <SvgLogo />
-          <p className="font-bold text-inherit ml-1">SGIPT</p>
+        <NavbarBrand className="m-0">
+          <Image src="/Icon.svg" alt="Tortilleria" width={40} height={40} />
+          <p className="font-bold text-inherit ml-1 text-2xl">Tortilleria</p>
         </NavbarBrand>
-      </NavbarContent>
+      </div>
 
-      <NavbarContent className="hidden sm:flex gap-4" justify="center">
-        <NavbarItem>
-          <Link color="foreground" href="/dashboard/users">
-            Usuarios
-          </Link>
-        </NavbarItem>
+      <div className="sm:flex gap-4 flex-1 flex items-center">
         <NavbarItem isActive>
           <Link aria-current="page" href="/dashboard">
             Inicio
           </Link>
         </NavbarItem>
-      </NavbarContent>
-      <NavbarContent justify="end">
-        <NavbarItem className="hidden lg:flex">
-          <Link href="#">Login</Link>
+        <NavbarItem className="opacity-75">
+          <Link className="font-thin" color="foreground" href="/dashboard/users">
+            Usuarios
+          </Link>
         </NavbarItem>
-        <NavbarItem>
-          <Button as={Link} color="primary" href="#" variant="flat">
-            Sign Up
-          </Button>
+        <NavbarItem className="opacity-75">
+          <Link className="font-thin" color="foreground" href="/dashboard/users">
+            Sucursales
+          </Link>
         </NavbarItem>
-      </NavbarContent>
-      <NavbarContent>
+        <NavbarItem className="opacity-75">
+          <Link className="font-thin" color="foreground" href="/dashboard/users">
+            Activos fijos
+          </Link>
+        </NavbarItem>
+      </div>
+
+      <div className="flex-none">
         <SwitchMode />
-      </NavbarContent>
+      </div>
+
       <NavbarMenu>
         {menuItems.map((item, index) => (
           <NavbarMenuItem key={`${item}-${index}`}>
             <Link
               className="w-full"
               color={
-                index === 2 ? "primary" : index === menuItems.length - 1 ? "danger" : "foreground"
+                index === 2
+                  ? "primary"
+                  : index === menuItems.length - 1
+                  ? "danger"
+                  : "foreground"
               }
               href="#"
               size="lg"
@@ -87,4 +94,3 @@ export default function NavBar() {
     </Navbar>
   );
 }
-

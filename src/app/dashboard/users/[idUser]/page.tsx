@@ -1,5 +1,5 @@
 import { LayoutPage } from "@/app/ui/components/LayoutPage";
-import { FormUpdateUser } from "@/app/ui/users/form-update-user";
+import { FormUpdateUser } from "@/app/ui/users/update-user-form";
 
 type Props = {
   params: Promise<{ idUser: string }>;

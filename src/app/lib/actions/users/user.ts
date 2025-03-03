@@ -31,7 +31,7 @@ export async function submitNewUser(prevState: ActionResponse | null, formData: 
     if (!validatedData.success) {
       return {
         success: false,
-        message: 'Please fix the errors in the form',
+        message: 'Corrige los errores en el formulario',
         errors: validatedData.error.flatten().fieldErrors,
       }
     }
@@ -47,7 +47,7 @@ export async function submitNewUser(prevState: ActionResponse | null, formData: 
 
     return {
       success: true,
-      message: 'Address saved successfully!',
+      message: 'Usuario creado correctamente!',
     }
   } catch (error) {
     return {
@@ -79,7 +79,7 @@ export async function updateUser(prevState: ActionResponseUpdate | null, formDat
     if (!validatedData.success) {
       return {
         success: false,
-        message: "Please fix the errors in the form",
+        message: "Corrige los errores en el formulario",
         errors: validatedData.error.flatten().fieldErrors,
       }
     }
@@ -94,12 +94,12 @@ export async function updateUser(prevState: ActionResponseUpdate | null, formDat
     })
 
     if (!response.ok) {
-      throw new Error("Failed to update user")
+      throw new Error("Error al actualizar el usuario")
     }
 
     return {
       success: true,
-      message: "User updated successfully!",
+      message: "Usuario actualizado correctamente!",
     }
   } catch (error) {
     return {
@@ -109,11 +109,26 @@ export async function updateUser(prevState: ActionResponseUpdate | null, formDat
   }
 }
 
-/* Show all users */
-export async function getUsers() {
-  const data = await fetch(apiRoutes.user.getAllUsers);
+const itemsPerPage = 8;
+
+export async function getUsers(page = 1) {
+  const data = await fetch(`${apiRoutes.user.getAllUsers}`);
+  
+  if (!data.ok) {
+    throw new Error('Error al obtener los usuarios');
+  }
+
   const users = await data.json();
-  return users;
+  const totalUsers = users.length; // Calcula el total de usuarios
+  const totalPages = Math.ceil(totalUsers / itemsPerPage);
+
+  // Slice para paginar los resultados
+  const paginatedUsers = users.slice((page - 1) * itemsPerPage, page * itemsPerPage);
+
+  return {
+    data: paginatedUsers,
+    totalPages,
+  };
 }
 
 /* Get user by Id */

@@ -1,4 +1,4 @@
-"use client";
+'use client';
 import React, { useState, useEffect } from "react";
 import {
   Table,
@@ -10,15 +10,11 @@ import {
   getKeyValue,
   Tooltip,
   Button,
-  Modal,
-  ModalContent,
-  ModalHeader,
-  ModalBody,
-  ModalFooter,
   useDisclosure,
   Input,
   Pagination,
 } from "@heroui/react";
+import Model from "@/app/ui/components/modal";
 import { getUsers, deleteUser } from "@/app/lib/actions/users/user";
 import { EditIcon, DeleteIcon, SearchIcon, AddIcon } from "@/app/ui/svg/icons";
 import { toast } from "sonner";
@@ -44,7 +40,7 @@ export default function UserTable() {
   const [users, setUsers] = useState<User[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
-  const { isOpen, onOpen, onOpenChange } = useDisclosure();
+  const { isOpen, onOpen, onClose } = useDisclosure();
   const [userIdToDelete, setUserIdToDelete] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
 
@@ -73,10 +69,11 @@ export default function UserTable() {
         setUsers((prevUsers) =>
           prevUsers.filter((user) => user.id !== userIdToDelete)
         );
-        onOpenChange();
+        onClose();
         toast.success("Usuario eliminado correctamente");
       } catch (error) {
         console.error(error);
+        toast.error("Error al eliminar el usuario");
       }
     }
   };
@@ -171,28 +168,13 @@ export default function UserTable() {
         </Table>
       </div>
 
-      <Modal isOpen={isOpen} onOpenChange={onOpenChange} backdrop={"blur"}>
-        <ModalContent>
-          {(onClose) => (
-            <>
-              <ModalHeader className="flex flex-col gap-1">
-                Confirmación de eliminación
-              </ModalHeader>
-              <ModalBody>
-                <p>¿Estás seguro de que deseas eliminar este usuario?</p>
-              </ModalBody>
-              <ModalFooter>
-                <Button color="danger" variant="light" onPress={onClose}>
-                  Cancelar
-                </Button>
-                <Button color="primary" onPress={handleDelete}>
-                  Confirmar
-                </Button>
-              </ModalFooter>
-            </>
-          )}
-        </ModalContent>
-      </Modal>
+      <Model
+        isOpen={isOpen}
+        onClose={onClose}
+        onConfirm={handleDelete}
+        title="Confirmación de eliminación"
+        body="¿Estás seguro de que deseas eliminar este usuario?"
+      />
     </>
   );
 }

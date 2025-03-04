@@ -17,6 +17,7 @@ import type { ActionResponse } from "@/app/types/user";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { toast } from "sonner";
+import Link from "next/link";
 
 const initialState: ActionResponse = {
   success: false,
@@ -140,14 +141,25 @@ export default function NewUserForm() {
               </p>
             )}
           </div>
-          <Button
-            type="submit"
-            color="primary"
-            className="mt-4"
-            isLoading={isPending}
-          >
-            {isPending ? "Creando..." : "Crear"}
-          </Button>
+          <div className="flex flex-row-reverse w-full justify-between items-center gap-4">
+            <Button
+              type="submit"
+              color="primary"
+              className="mt-4 w-1/2"
+              isLoading={isPending}
+            >
+              {isPending ? "Creando..." : "Crear"}
+            </Button>
+            <Button
+              color="primary"
+              variant="bordered"
+              as={Link}
+              href="/dashboard/users"
+              className="mt-4 w-1/2"
+            >
+              Regresar
+            </Button>
+          </div>
         </form>
       </CardBody>
     </Card>

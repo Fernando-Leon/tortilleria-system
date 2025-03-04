@@ -17,6 +17,8 @@ import {
   CardHeader,
   CardBody,
 } from "@heroui/react";
+import Link from "next/link";
+
 
 const initialState: ActionResponseUpdate = {
   success: false,
@@ -160,14 +162,24 @@ export const FormUpdateUser: React.FC<FormUpdateUserProps> = ({ idUser }) => {
               </SelectItem>
             ))}
           </Select>
-
-          <Button
-            type="submit"
-            color="primary"
-            isLoading={isPending}
-          >
-            {isPending ? "Actualizando..." : "Actualizar"}
-          </Button>
+          <div className="flex flex-row-reverse w-full justify-between items-center gap-4">
+            <Button
+              type="submit"
+              color="primary"
+              isLoading={isPending}
+            >
+              {isPending ? "Actualizando..." : "Actualizar"}
+            </Button>
+            <Button
+              color="primary"
+              variant="bordered"
+              as={Link}
+              href="/dashboard/users"
+              className="mt-4 w-1/2"
+            >
+              Regresar
+            </Button>
+          </div>
         </form>
       </CardBody>
     </Card>

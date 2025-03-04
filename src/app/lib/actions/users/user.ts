@@ -4,14 +4,12 @@ import apiRoutes from '@/app/lib/routes/routes';
 import type { ActionResponse, UserFormData, UserUpdateFormData, ActionResponseUpdate } from '@/app/types/user'
 import { z } from 'zod';
 
-
 const userSchema = z.object({
-  name: z.string().min(2, { message: "El nombre debe tener como minimo dos letras" }),
-  lastname: z.string().min(2, { message: "El apellido debe tener como minimo dos letras" }),
-  mail: z.string().email({ message: "Direccion de correo invalido" }),
+  name: z.string().trim().min(2, { message: "El nombre debe tener como mínimo dos letras" }).refine(value => value.trim().length > 0, { message: "El nombre no puede estar vacío" }),
+  lastname: z.string().trim().min(2, { message: "El apellido debe tener como mínimo dos letras" }).refine(value => value.trim().length > 0, { message: "El apellido no puede estar vacío" }),
+  mail: z.string().trim().email({ message: "Dirección de correo inválido" }),
   sexId: z.number().int().positive({ message: "El sexo es requerido" }),
 });
-
 
 // Create new user
 export async function submitNewUser(prevState: ActionResponse | null, formData: FormData): Promise<ActionResponse> {
@@ -57,8 +55,7 @@ export async function submitNewUser(prevState: ActionResponse | null, formData: 
   }
 }
 
-
-//Update user for depply
+// Update user
 export async function updateUser(prevState: ActionResponseUpdate | null, formData: FormData): Promise<ActionResponseUpdate> {
   await new Promise((resolve) => setTimeout(resolve, 200))
 

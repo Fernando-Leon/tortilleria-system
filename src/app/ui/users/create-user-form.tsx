@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import { useActionState } from "react";
-import { getCatalogStatus } from "@/app/lib/actions/catalogs/catalogs";
+import { getCatalogStatus, getCatalogRoles } from "@/app/lib/actions/catalogs/catalogs";
 import { submitNewUser } from "@/app/lib/actions/users/user";
 import {
   Button,
@@ -32,12 +32,17 @@ export default function NewUserForm() {
   const [statusOptions, setStatusOptions] = useState<{ id: number; name: string }[]>(
     []
   );
+  const [rolesOptions, setRolesOptions] = useState<{ id: number; name: string }[]>(
+    []
+  );
   const router = useRouter();
 
   useEffect(() => {
     async function fetchStatusOptions() {
-      const options = await getCatalogStatus();
-      setStatusOptions(options);
+      const status = await getCatalogStatus();
+      const roles = await getCatalogRoles();
+      setRolesOptions(roles);
+      setStatusOptions(status);
     }
     fetchStatusOptions();
   }, []);
@@ -87,7 +92,7 @@ export default function NewUserForm() {
               name="password"
               variant="bordered"
               type="password"
-              placeholder="Leon"
+              placeholder="tu_contraseña"
               minLength={2}
               maxLength={20}
               required
@@ -100,27 +105,29 @@ export default function NewUserForm() {
               </p>
             )}
           </div>
-
           <div className="space-y-2">
-            <label htmlFor="role">Rol</label>
-            <Input
-              id="role"
-              name="role"
-              placeholder="administrador"
+            <label htmlFor="roleId">Rol</label>
+            <Select
+              id="roleId"
+              name="roleId"
               variant="bordered"
-              minLength={2}
-              maxLength={50}
+              placeholder="Selecciona un estado"
               aria-describedby="role-error"
-              required
-              className={state?.errors?.role ? "border-red-500" : ""}
-            />
-            {state?.errors?.role && (
-              <p id="role-error" className="text-sm text-red-500">
-                {state.errors.role[0]}
+              isRequired
+              className={state?.errors?.roleId ? "border-red-500" : ""}
+            >
+              {rolesOptions.map((role) => (
+                <SelectItem key={role.id} value={role.id}>
+                  {role.name}
+                </SelectItem>
+              ))}
+            </Select>
+            {state?.errors?.roleId && (
+              <p id="roleId-error" className="text-sm text-red-500">
+                {state.errors.roleId[0]}
               </p>
             )}
           </div>
-
           <div className="space-y-2">
             <label htmlFor="statusId">Estado</label>
             <Select

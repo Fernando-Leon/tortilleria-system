@@ -7,13 +7,13 @@ import { z } from 'zod';
 const userSchema = z.object({
   name: z.string().trim().min(2, { message: "El nombre debe tener como mínimo dos letras" }).refine(value => value.trim().length > 0, { message: "El nombre no puede estar vacío" }),
   password: z.string().trim().min(2, { message: "La contraseña debe tener como mínimo dos letras " }).refine(value => value.trim().length > 0, { message: "La contraseña no puede estar vacia" }),
-  role: z.string().trim().min(2, { message: "El rol debe tener como mínimo dos letras " }).refine(value => value.trim().length > 0, { message: "La contraseña no puede estar vacia" }),
+  roleId: z.number().int().positive({ message: "El rol es requerido" }),
   statusId: z.number().int().positive({ message: "El estado es requerido" }),
 });
 
 const userSchemaUpdate = z.object({
   name: z.string().trim().min(2, { message: "El nombre debe tener como mínimo dos letras" }).refine(value => value.trim().length > 0, { message: "El nombre no puede estar vacío" }),
-  role: z.string().trim().min(2, { message: "El rol debe tener como mínimo dos letras " }).refine(value => value.trim().length > 0, { message: "La contraseña no puede estar vacia" }),
+  roleId: z.number().int().positive({ message: "El rol es requerido" }),
   statusId: z.number().int().positive({ message: "El estado es requerido" }),
 });
 
@@ -25,7 +25,7 @@ export async function submitNewUser(prevState: ActionResponse | null, formData: 
     const rawData: UserFormData = {
       name: formData.get('name') as string,
       password: formData.get('password') as string,
-      role: formData.get('role') as string,
+      roleId: Number(formData.get('roleId')),
       statusId: Number(formData.get('statusId')),
     }
 
@@ -68,7 +68,7 @@ export async function updateUser(prevState: ActionResponseUpdate | null, formDat
     const rawData: UserUpdateFormData = {
       id: Number(formData.get("id")),
       name: formData.get("name") as string,
-      role: formData.get("role") as string,
+      roleId: Number(formData.get("roleId")),
       statusId: Number(formData.get("statusId")),
     }
 
@@ -131,8 +131,9 @@ export async function getUsers(page = 1) {
   const paginatedUsers = users.slice((page - 1) * itemsPerPage, page * itemsPerPage);
 
   // Transformación de los usuarios para solo enviar el nombre del estado
-  const transformedUsers = paginatedUsers.map((user: { status: { name: string; }; }) => ({
+  const transformedUsers = paginatedUsers.map((user: { status: { name: string; }; role: { name: string } },) => ({
     ...user,
+    role: user.role.name, // Solo pasamos el `name` del role
     status: user.status.name, // Solo pasamos el `name` del status
   }));
 

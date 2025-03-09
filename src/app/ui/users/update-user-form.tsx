@@ -4,7 +4,7 @@ import type React from "react";
 
 import { useActionState, useEffect, useState } from "react";
 import { updateUser ,getUserById } from "@/app/lib/actions/users/user";
-import { getCatalogStatus } from "@/app/lib/actions/catalogs/catalogs";
+import { getCatalogStatus, getCatalogRoles } from "@/app/lib/actions/catalogs/catalogs";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import type { ActionResponseUpdate } from "@/app/types/user";
@@ -37,9 +37,12 @@ export const FormUpdateUser: React.FC<FormUpdateUserProps> = ({ idUser }) => {
   const [statusOptions, setStatusOptions] = useState<{ id: number; name: string }[]>(
     []
   );
+  const [roleOptions, setRoleOptions] = useState<{ id: number; name: string }[]>(
+    []
+  );
   const [userData, setUserData] = useState({
     name: "",
-    role: "",
+    roleId: "",
     statusId: ""
   });
   const router = useRouter();
@@ -47,16 +50,18 @@ export const FormUpdateUser: React.FC<FormUpdateUserProps> = ({ idUser }) => {
   useEffect(() => {
     async function fetchData() {
       try {
-        const [statusOptions, userData] = await Promise.all([
+        const [roleOptions, statusOptions, userData] = await Promise.all([
+          getCatalogRoles(),
           getCatalogStatus(),
           getUserById(Number(idUser)),
         ]);
 
+        setRoleOptions(roleOptions);
         setStatusOptions(statusOptions);
         console.log("User data fetched:", userData);
         setUserData({
             name: userData.name,
-            role: userData.role,
+            roleId: userData.role.id.toString(),
             statusId: userData.status.id.toString()
           });
       } catch (error) {
@@ -113,21 +118,30 @@ export const FormUpdateUser: React.FC<FormUpdateUserProps> = ({ idUser }) => {
             />
           </div>
           <div className="space-y-2">
-            <label htmlFor="role">Rol</label>
-            <Input
-              id="role"
-              name="role"
+            <label htmlFor="roleId">Rol</label>
+            <Select
               variant="bordered"
-              placeholder="Administrador"
-              minLength={2}
-              maxLength={20}
-              aria-describedby="role-error"
-              required
-              value={userData.role}
-              onChange={(e) =>
-                setUserData((prev) => ({ ...prev, role: e.target.value }))
+              name="roleId"
+              isRequired
+              selectedKeys={[userData.roleId]}
+              onSelectionChange={(keys) =>
+                setUserData((prev) => ({
+                  ...prev,
+                  roleId: Array.from(keys)[0] as string,
+                }))
               }
-            />
+            >
+              {roleOptions.map((role) => (
+                <SelectItem key={role.id} value={role.id.toString()}>
+                  {role.name}
+                </SelectItem>
+              ))}
+            </Select>
+            {state?.errors?.roleId && (
+              <p id="roleId-error" className="text-sm text-red-500">
+                {state.errors.roleId[0]}
+              </p>
+            )}
           </div>
           <div className="space-y-2">
             <label htmlFor="statusId">Estado</label>

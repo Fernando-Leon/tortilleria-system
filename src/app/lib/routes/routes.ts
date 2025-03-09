@@ -56,36 +56,13 @@ const productApi: ProductApi = {
 
 type Assets = {
   getCatalogStatus: string;
+  getCatalogRoles: string;
 };
 
 const assets: Assets = {
   getCatalogStatus: `${baseURL}/status`,
+  getCatalogRoles: `${baseURL}/roles`,
 };
-
-/**
- * 
- * 
- * 🚀 API Routes
- */
-
-type FixedAssets = {
-  getAllFixedAssets: string;
-  createFixedAsset: string;
-  getFixedAssetById: (id: string | number) => string;
-  updateFixedAssetById: (id: string | number) => string;
-  deleteFixedAssetById: (id: string | number) => string;
-} 
-
-const FixedAssetsBasePath = `${baseURL}/fixed-assets`;
-
-const fixedAssets: FixedAssets = {
-  getAllFixedAssets: FixedAssetsBasePath,
-  createFixedAsset: FixedAssetsBasePath,
-  getFixedAssetById: (id) => `${FixedAssetsBasePath}/${id}`,
-  updateFixedAssetById: (id) => `${FixedAssetsBasePath}/${id}`,
-  deleteFixedAssetById: (id) => `${FixedAssetsBasePath}/${id}`,
-};
-
 
 /**
  * 
@@ -97,7 +74,6 @@ const apiRoutes = {
   user,
   productApi,
   assets,
-  fixedAssets,
 };
 
 export default apiRoutes;

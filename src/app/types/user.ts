@@ -1,7 +1,7 @@
 export interface UserFormData {
   name: string;
   password: string;
-  role?: string;
+  roleId: number;
   statusId: number;
 }
 
@@ -16,7 +16,7 @@ export interface ActionResponse {
 export interface UserUpdateFormData {
   id: number;
   name: string;
-  role?: string;
+  roleId: number;
   statusId: number;
 }
 

@@ -6,9 +6,15 @@ import { z } from 'zod';
 
 const userSchema = z.object({
   name: z.string().trim().min(2, { message: "El nombre debe tener como mínimo dos letras" }).refine(value => value.trim().length > 0, { message: "El nombre no puede estar vacío" }),
-  lastname: z.string().trim().min(2, { message: "El apellido debe tener como mínimo dos letras" }).refine(value => value.trim().length > 0, { message: "El apellido no puede estar vacío" }),
-  mail: z.string().trim().email({ message: "Dirección de correo inválido" }),
-  sexId: z.number().int().positive({ message: "El sexo es requerido" }),
+  password: z.string().trim().min(2, { message: "La contraseña debe tener como mínimo dos letras " }).refine(value => value.trim().length > 0, { message: "La contraseña no puede estar vacia" }),
+  role: z.string().trim().min(2, { message: "El rol debe tener como mínimo dos letras " }).refine(value => value.trim().length > 0, { message: "La contraseña no puede estar vacia" }),
+  statusId: z.number().int().positive({ message: "El estado es requerido" }),
+});
+
+const userSchemaUpdate = z.object({
+  name: z.string().trim().min(2, { message: "El nombre debe tener como mínimo dos letras" }).refine(value => value.trim().length > 0, { message: "El nombre no puede estar vacío" }),
+  role: z.string().trim().min(2, { message: "El rol debe tener como mínimo dos letras " }).refine(value => value.trim().length > 0, { message: "La contraseña no puede estar vacia" }),
+  statusId: z.number().int().positive({ message: "El estado es requerido" }),
 });
 
 // Create new user
@@ -18,9 +24,9 @@ export async function submitNewUser(prevState: ActionResponse | null, formData: 
   try {
     const rawData: UserFormData = {
       name: formData.get('name') as string,
-      lastname: formData.get('lastname') as string,
-      mail: formData.get('mail') as string,
-      sexId: Number(formData.get('sexId')),
+      password: formData.get('password') as string,
+      role: formData.get('role') as string,
+      statusId: Number(formData.get('statusId')),
     }
 
     // Validate the form data
@@ -55,7 +61,6 @@ export async function submitNewUser(prevState: ActionResponse | null, formData: 
   }
 }
 
-// Update user
 export async function updateUser(prevState: ActionResponseUpdate | null, formData: FormData): Promise<ActionResponseUpdate> {
   await new Promise((resolve) => setTimeout(resolve, 200))
 
@@ -63,15 +68,16 @@ export async function updateUser(prevState: ActionResponseUpdate | null, formDat
     const rawData: UserUpdateFormData = {
       id: Number(formData.get("id")),
       name: formData.get("name") as string,
-      lastname: formData.get("lastname") as string,
-      mail: formData.get("mail") as string,
-      sexId: Number(formData.get("sexId")),
+      role: formData.get("role") as string,
+      statusId: Number(formData.get("statusId")),
     }
 
     console.log("Raw data:", rawData) 
 
     // Validate the form data
-    const validatedData = userSchema.safeParse(rawData)
+    const validatedData = userSchemaUpdate.safeParse(rawData)
+
+    console.log("Validated data:", validatedData)
 
     if (!validatedData.success) {
       return {
@@ -80,6 +86,8 @@ export async function updateUser(prevState: ActionResponseUpdate | null, formDat
         errors: validatedData.error.flatten().fieldErrors,
       }
     }
+
+    console.log("Llega hasta aquí");
 
     // Send the data to the server
     const response = await fetch(apiRoutes.user.updateUserById(rawData.id), {
@@ -122,10 +130,22 @@ export async function getUsers(page = 1) {
   // Slice para paginar los resultados
   const paginatedUsers = users.slice((page - 1) * itemsPerPage, page * itemsPerPage);
 
+  // Transformación de los usuarios para solo enviar el nombre del estado
+  const transformedUsers = paginatedUsers.map((user: { status: { name: string; }; }) => ({
+    ...user,
+    status: user.status.name, // Solo pasamos el `name` del status
+  }));
+
   return {
-    data: paginatedUsers,
+    data: transformedUsers,
     totalPages,
   };
+}
+
+export async function getAllUsers() {
+  const data = await fetch(apiRoutes.user.getAllUsers);
+  const users = await data.json();
+  return users;
 }
 
 /* Get user by Id */

@@ -4,7 +4,7 @@ import type React from "react";
 
 import { useActionState, useEffect, useState } from "react";
 import { updateUser ,getUserById } from "@/app/lib/actions/users/user";
-import { getCatalogSex } from "@/app/lib/actions/catalogs/catalogs";
+import { getCatalogStatus } from "@/app/lib/actions/catalogs/catalogs";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import type { ActionResponseUpdate } from "@/app/types/user";
@@ -34,28 +34,31 @@ export const FormUpdateUser: React.FC<FormUpdateUserProps> = ({ idUser }) => {
     updateUser,
     initialState
   );
-  const [sexOptions, setSexOptions] = useState<{ id: number; name: string }[]>(
+  const [statusOptions, setStatusOptions] = useState<{ id: number; name: string }[]>(
     []
   );
   const [userData, setUserData] = useState({
     name: "",
-    lastname: "",
-    mail: "",
-    sexId: "",
+    role: "",
+    statusId: ""
   });
   const router = useRouter();
 
   useEffect(() => {
     async function fetchData() {
       try {
-        const [sexOptions, userData] = await Promise.all([
-          getCatalogSex(),
+        const [statusOptions, userData] = await Promise.all([
+          getCatalogStatus(),
           getUserById(Number(idUser)),
         ]);
 
-        setSexOptions(sexOptions);
+        setStatusOptions(statusOptions);
         console.log("User data fetched:", userData);
-        setUserData(userData);
+        setUserData({
+            name: userData.name,
+            role: userData.role,
+            statusId: userData.status.id.toString()
+          });
       } catch (error) {
         console.error("Error fetching data:", error);
         toast.error("Error al cargar los datos del usuario");
@@ -74,7 +77,7 @@ export const FormUpdateUser: React.FC<FormUpdateUserProps> = ({ idUser }) => {
   return (
     <Card className="p-4 w-1/2">
       <CardHeader className="flex gap-3">
-        <h2 className="text-2XL font-semibold text-center">
+        <h2 className="text-2xl font-semibold text-center">
           Actualizar usuario
         </h2>
       </CardHeader>
@@ -98,10 +101,10 @@ export const FormUpdateUser: React.FC<FormUpdateUserProps> = ({ idUser }) => {
             <Input
               id="name"
               name="name"
-              placeholder="Fernando"
               minLength={2}
               maxLength={20}
               aria-describedby="name-error"
+              variant="bordered"
               required
               value={userData.name}
               onChange={(e) =>
@@ -110,62 +113,53 @@ export const FormUpdateUser: React.FC<FormUpdateUserProps> = ({ idUser }) => {
             />
           </div>
           <div className="space-y-2">
-            <label htmlFor="lastname">Apellido</label>
+            <label htmlFor="role">Rol</label>
             <Input
-              id="lastname"
-              name="lastname"
+              id="role"
+              name="role"
               variant="bordered"
-              placeholder="Leon"
+              placeholder="Administrador"
               minLength={2}
               maxLength={20}
-              aria-describedby="lastname-error"
+              aria-describedby="role-error"
               required
-              value={userData.lastname}
+              value={userData.role}
               onChange={(e) =>
-                setUserData((prev) => ({ ...prev, lastname: e.target.value }))
+                setUserData((prev) => ({ ...prev, role: e.target.value }))
               }
             />
           </div>
           <div className="space-y-2">
-            <label htmlFor="mail">Apellido</label>
-            <Input
-              id="mail"
-              name="mail"
+            <label htmlFor="statusId">Estado</label>
+            <Select
               variant="bordered"
-              placeholder="Leon"
-              minLength={2}
-              maxLength={20}
-              aria-describedby="mail-error"
-              required
-              value={userData.mail}
-              onChange={(e) =>
-                setUserData((prev) => ({ ...prev, mail: e.target.value }))
+              name="statusId"
+              isRequired
+              selectedKeys={[userData.statusId]}
+              onSelectionChange={(keys) =>
+                setUserData((prev) => ({
+                  ...prev,
+                  statusId: Array.from(keys)[0] as string,
+                }))
               }
-            />
+            >
+              {statusOptions.map((status) => (
+                <SelectItem key={status.id} value={status.id.toString()}>
+                  {status.name}
+                </SelectItem>
+              ))}
+            </Select>
+            {state?.errors?.statusId && (
+              <p id="statusId-error" className="text-sm text-red-500">
+                {state.errors.statusId[0]}
+              </p>
+            )}
           </div>
-          <Select
-            label="Sex"
-            variant="bordered"
-            name="sexId"
-            isRequired
-            selectedKeys={[userData.sexId.toString()]}
-            onSelectionChange={(keys) =>
-              setUserData((prev) => ({
-                ...prev,
-                sexId: Array.from(keys)[0] as string,
-              }))
-            }
-          >
-            {sexOptions.map((sex) => (
-              <SelectItem key={sex.id} value={sex.id.toString()}>
-                {sex.name}
-              </SelectItem>
-            ))}
-          </Select>
           <div className="flex flex-row-reverse w-full justify-between items-center gap-4">
             <Button
               type="submit"
               color="primary"
+              className="mt-4 w-1/2"
               isLoading={isPending}
             >
               {isPending ? "Actualizando..." : "Actualizar"}

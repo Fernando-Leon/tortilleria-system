@@ -1,8 +1,8 @@
 export interface UserFormData {
   name: string;
-  lastname?: string;
-  mail: string;
-  sexId: number;
+  password: string;
+  role?: string;
+  statusId: number;
 }
 
 export interface ActionResponse {
@@ -13,8 +13,11 @@ export interface ActionResponse {
   };
 }
 
-export interface UserUpdateFormData extends UserFormData {
+export interface UserUpdateFormData {
   id: number;
+  name: string;
+  role?: string;
+  statusId: number;
 }
 
 export interface ActionResponseUpdate {

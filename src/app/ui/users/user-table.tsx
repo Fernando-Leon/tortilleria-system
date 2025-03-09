@@ -23,16 +23,14 @@ import Link from "next/link";
 interface User {
   id: string;
   name: string;
-  lastname: string;
-  mail: string;
-  sex: string;
+  role: string;
+  status: string;
 }
 
 const columns = [
   { key: "name", label: "NOMBRE" },
-  { key: "lastname", label: "APELLIDO" },
-  { key: "mail", label: "CORREO ELECTRÓNICO" },
-  { key: "sex", label: "SEXO" },
+  { key: "role", label: "ROL" },
+  { key: "status", label: "ESTADO" },
   { key: "actions", label: "ACCIONES" },
 ];
 

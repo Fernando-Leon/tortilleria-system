@@ -61,7 +61,7 @@ export default function NavBar() {
           </Link>
         </NavbarItem>
         <NavbarItem className="opacity-75">
-          <Link className="font-thin" color="foreground" href="/dashboard/users">
+          <Link className="font-thin" color="foreground" href="/dashboard/fixed-assets">
             Activos fijos
           </Link>
         </NavbarItem>

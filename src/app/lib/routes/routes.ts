@@ -55,11 +55,11 @@ const productApi: ProductApi = {
  */
 
 type Assets = {
-  getCatalogSexs: string;
+  getCatalogStatus: string;
 };
 
 const assets: Assets = {
-  getCatalogSexs: `${baseURL}/sexs`,
+  getCatalogStatus: `${baseURL}/status`,
 };
 
 /**

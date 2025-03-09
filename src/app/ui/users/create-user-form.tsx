@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import { useActionState } from "react";
-import { getCatalogSex } from "@/app/lib/actions/catalogs/catalogs";
+import { getCatalogStatus } from "@/app/lib/actions/catalogs/catalogs";
 import { submitNewUser } from "@/app/lib/actions/users/user";
 import {
   Button,
@@ -29,17 +29,17 @@ export default function NewUserForm() {
     submitNewUser,
     initialState
   );
-  const [sexOptions, setSexOptions] = useState<{ id: number; name: string }[]>(
+  const [statusOptions, setStatusOptions] = useState<{ id: number; name: string }[]>(
     []
   );
   const router = useRouter();
 
   useEffect(() => {
-    async function fetchSexOptions() {
-      const options = await getCatalogSex();
-      setSexOptions(options);
+    async function fetchStatusOptions() {
+      const options = await getCatalogStatus();
+      setStatusOptions(options);
     }
-    fetchSexOptions();
+    fetchStatusOptions();
   }, []);
 
   useEffect(() => {
@@ -81,63 +81,66 @@ export default function NewUserForm() {
           </div>
 
           <div className="space-y-2">
-            <label htmlFor="lastname">Apellido</label>
+            <label htmlFor="password">Contraseña</label>
             <Input
-              id="lastname"
-              name="lastname"
+              id="password"
+              name="password"
               variant="bordered"
+              type="password"
               placeholder="Leon"
               minLength={2}
               maxLength={20}
-              aria-describedby="lastname-error"
               required
+              aria-describedby="password-error"
+              className={state?.errors?.password ? "border-red-500" : ""}
             />
-            {state?.errors?.lastname && (
+            {state?.errors?.password && (
               <p id="name-error" className="text-sm text-red-500">
-                {state.errors.lastname[0]}
+                {state.errors.password[0]}
               </p>
             )}
           </div>
 
           <div className="space-y-2">
-            <label htmlFor="mail">Correo electronico</label>
+            <label htmlFor="role">Rol</label>
             <Input
-              id="mail"
-              name="mail"
-              placeholder="correo@correo.com"
+              id="role"
+              name="role"
+              placeholder="administrador"
               variant="bordered"
-              required
               minLength={2}
               maxLength={50}
-              aria-describedby="mail-error"
-              className={state?.errors?.mail ? "border-red-500" : ""}
+              aria-describedby="role-error"
+              required
+              className={state?.errors?.role ? "border-red-500" : ""}
             />
-            {state?.errors?.mail && (
-              <p id="mail-error" className="text-sm text-red-500">
-                {state.errors.mail[0]}
+            {state?.errors?.role && (
+              <p id="role-error" className="text-sm text-red-500">
+                {state.errors.role[0]}
               </p>
             )}
           </div>
 
           <div className="space-y-2">
-            <label htmlFor="sexId">Sexo</label>
+            <label htmlFor="statusId">Estado</label>
             <Select
-              placeholder="Selecciona un sexo"
-              id="sexId"
-              name="sexId"
+              id="statusId"
+              name="statusId"
               variant="bordered"
+              placeholder="Selecciona un estado"
+              aria-describedby="status-error"
               isRequired
-              className={state?.errors?.sexId ? "border-red-500" : ""}
+              className={state?.errors?.statusId ? "border-red-500" : ""}
             >
-              {sexOptions.map((sex) => (
-                <SelectItem key={sex.id} value={sex.id}>
-                  {sex.name}
+              {statusOptions.map((status) => (
+                <SelectItem key={status.id} value={status.id}>
+                  {status.name}
                 </SelectItem>
               ))}
             </Select>
-            {state?.errors?.sexId && (
-              <p id="state-error" className="text-sm text-red-500">
-                {state.errors.sexId[0]}
+            {state?.errors?.statusId && (
+              <p id="statusId-error" className="text-sm text-red-500">
+                {state.errors.statusId[0]}
               </p>
             )}
           </div>

@@ -92,7 +92,7 @@ export default function NewUserForm() {
               name="password"
               variant="bordered"
               type="password"
-              placeholder="tu_contraseña"
+              placeholder="tu_contraseña" 
               minLength={2}
               maxLength={20}
               required

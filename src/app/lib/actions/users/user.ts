@@ -19,7 +19,7 @@ const userSchemaUpdate = z.object({
 
 // Create new user
 export async function submitNewUser(prevState: ActionResponse | null, formData: FormData): Promise<ActionResponse> {
-  await new Promise((resolve) => setTimeout(resolve, 200))
+  await new Promise((resolve) => setTimeout(resolve, 200));
 
   try {
     const rawData: UserFormData = {
@@ -27,37 +27,41 @@ export async function submitNewUser(prevState: ActionResponse | null, formData: 
       password: formData.get('password') as string,
       roleId: Number(formData.get('roleId')),
       statusId: Number(formData.get('statusId')),
-    }
+    };
 
     // Validate the form data
-    const validatedData = userSchema.safeParse(rawData)
+    const validatedData = userSchema.safeParse(rawData);
 
     if (!validatedData.success) {
       return {
         success: false,
         message: 'Corrige los errores en el formulario',
         errors: validatedData.error.flatten().fieldErrors,
-      }
+      };
     }
 
     // Send the data to the server
-    await fetch(apiRoutes.user.createNewUser, {
+    const response = await fetch('http://localhost:3001/auth/register', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify(validatedData.data),
-    })
+    });
+
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
+    }
 
     return {
       success: true,
       message: 'Usuario creado correctamente!',
-    }
+    };
   } catch (error) {
     return {
       success: false,
-      message: 'An unexpected error occurred:' + error,
-    }
+      message: 'An unexpected error occurred: ' + error,
+    };
   }
 }
 

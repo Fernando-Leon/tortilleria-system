@@ -41,7 +41,7 @@ export async function submitNewUser(prevState: ActionResponse | null, formData: 
     }
 
     // Send the data to the server
-    const response = await fetch(apiRoutes.user.createNewUser, {
+    const response = await fetch("https://tortilleria-backend-production.up.railway.app/auth/register", {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

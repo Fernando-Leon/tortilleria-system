@@ -41,7 +41,7 @@ export async function submitNewUser(prevState: ActionResponse | null, formData: 
     }
 
     // Send the data to the server
-    const response = await fetch('http://localhost:3001/auth/register', {
+    const response = await fetch(apiRoutes.user.createNewUser, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

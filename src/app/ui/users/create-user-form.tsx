@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import { useActionState } from "react";
-import { getCatalogStatus, getCatalogRoles } from "@/app/lib/actions/catalogs/catalogs";
+import { getCatalogStatus, getCatalogPofiles } from "@/app/lib/actions/catalogs/catalogs";
 import { submitNewUser } from "@/app/lib/actions/users/user";
 import {
   Button,
@@ -18,6 +18,7 @@ import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { toast } from "sonner";
 import Link from "next/link";
+import ROUTES from "@/app/lib/routes/ROUTESPATH";
 
 const initialState: ActionResponse = {
   success: false,
@@ -32,7 +33,7 @@ export default function NewUserForm() {
   const [statusOptions, setStatusOptions] = useState<{ id: number; name: string }[]>(
     []
   );
-  const [rolesOptions, setRolesOptions] = useState<{ id: number; name: string }[]>(
+  const [profilesOptions, setProfilesOptions] = useState<{ id: number; name: string }[]>(
     []
   );
   const router = useRouter();
@@ -40,8 +41,8 @@ export default function NewUserForm() {
   useEffect(() => {
     async function fetchStatusOptions() {
       const status = await getCatalogStatus();
-      const roles = await getCatalogRoles();
-      setRolesOptions(roles);
+      const profiles = await getCatalogPofiles();
+      setProfilesOptions(profiles);
       setStatusOptions(status);
     }
     fetchStatusOptions();
@@ -50,7 +51,7 @@ export default function NewUserForm() {
   useEffect(() => {
     if (state.success) {
       toast.success(state.message);
-      router.push("/dashboard/users");
+      router.push(ROUTES.MANAGEMENT.USERS);
     }
   }, [state.success, state.message, router]);
 
@@ -106,25 +107,25 @@ export default function NewUserForm() {
             )}
           </div>
           <div className="space-y-2">
-            <label htmlFor="roleId">Rol</label>
+            <label htmlFor="profileId">Perfil</label>
             <Select
-              id="roleId"
-              name="roleId"
+              id="profileId"
+              name="profileId"
               variant="bordered"
-              placeholder="Selecciona un estado"
-              aria-describedby="role-error"
+              placeholder="Selecciona un perfil"
+              aria-describedby="profile-error"
               isRequired
-              className={state?.errors?.roleId ? "border-red-500" : ""}
+              className={state?.errors?.profileId ? "border-red-500" : ""}
             >
-              {rolesOptions.map((role) => (
-                <SelectItem key={role.id} value={role.id}>
-                  {role.name}
+              {profilesOptions.map((profile) => (
+                <SelectItem key={profile.id} value={profile.id}>
+                  {profile.name}
                 </SelectItem>
               ))}
             </Select>
-            {state?.errors?.roleId && (
-              <p id="roleId-error" className="text-sm text-red-500">
-                {state.errors.roleId[0]}
+            {state?.errors?.profileId && (
+              <p id="profileId-error" className="text-sm text-red-500">
+                {state.errors.profileId[0]}
               </p>
             )}
           </div>
@@ -164,7 +165,7 @@ export default function NewUserForm() {
               color="primary"
               variant="bordered"
               as={Link}
-              href="/dashboard/users"
+              href={ROUTES.MANAGEMENT.USERS}
               className="mt-4 w-1/2"
             >
               Regresar

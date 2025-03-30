@@ -8,41 +8,40 @@ import {
   TableRow,
   TableCell,
   getKeyValue,
+  Tooltip,
   Button,
   useDisclosure,
   Input,
-  Pagination,
-  Tooltip,
+  Pagination
 } from "@heroui/react";
 import Model from "@/app/ui/components/modal";
-import { getUsers, deleteUser } from "@/app/lib/actions/users/user";
+import { getProfiles, deleteProfile } from "@/app/lib/actions/profile/profile";
 import { EditIcon, DeleteIcon, SearchIcon, AddIcon } from "@/app/ui/svg/icons";
 import { toast } from "sonner";
 import Link from "next/link";
 import ROUTES from "@/app/lib/routes/ROUTESPATH";
-interface User {
+
+interface Profile {
   id: string;
   name: string;
-  profile: string;
-  status: string;
+  description: string;
 }
 
 const columns = [
   { key: "name", label: "NOMBRE" },
-  { key: "profile", label: "PERFIL" },
-  { key: "status", label: "ESTADO" },
+  { key: "description", label: "DESCRIPCION" },
   { key: "actions", label: "ACCIONES" },
 ];
 
 export default function UserTable() {
-  const [users, setUsers] = useState<User[]>([]);
+  const [profiles, setProfiles] = useState<Profile[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const [userIdToDelete, setUserIdToDelete] = useState<string | null>(null);
+  const [profileIdToDelete, setUserIdToDelete] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
 
-  const filteredUsers = users.filter((user) =>
+  const filteredProfiles = profiles.filter((user) =>
     user.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
@@ -52,26 +51,26 @@ export default function UserTable() {
 
   async function fetchData(page: number) {
     try {
-      const { data, totalPages } = await getUsers(page);
-      setUsers(data);
+      const { data, totalPages } = await getProfiles(page);
+      setProfiles(data);
       setTotalPages(totalPages);
     } catch (error) {
-      console.error("Error fetching users:", error);
+      console.error("Error fetching profiles:", error);
     }
   }
 
   const handleDelete = async () => {
-    if (userIdToDelete) {
+    if (profileIdToDelete) {
       try {
-        await deleteUser(parseInt(userIdToDelete));
-        setUsers((prevUsers) =>
-          prevUsers.filter((user) => user.id !== userIdToDelete)
+        await deleteProfile(parseInt(profileIdToDelete));
+        setProfiles((prevProfiles) =>
+          prevProfiles.filter((profile) => profile.id !== profileIdToDelete)
         );
         onClose();
-        toast.success("Usuario eliminado correctamente");
+        toast.success("Perfil eliminado correctamente");
       } catch (error) {
         console.error(error);
-        toast.error("Error al eliminar el usuario");
+        toast.error("Error al eliminar el perfil: " + error);
       }
     }
   };
@@ -100,13 +99,13 @@ export default function UserTable() {
             as={Link}
             startContent={<AddIcon />}
             color="primary"
-            href={`${ROUTES.MANAGEMENT.USERS}/create`}
+            href={`${ROUTES.MANAGEMENT.PROFILES}/create`}
           >
-            Crear usuario
+            Crear perfil
           </Button>
         </div>
         <Table
-          aria-label="Tabla de usuarios"
+          aria-label="Tabla de perfiles"
           bottomContent={
             <div className="flex w-full justify-start">
               <Pagination
@@ -124,29 +123,29 @@ export default function UserTable() {
             ))}
           </TableHeader>
           <TableBody>
-            {filteredUsers.map((user) => (
-              <TableRow key={user.id}>
+            {filteredProfiles.map((profile) => (
+              <TableRow key={profile.id}>
                 {(columnKey) => (
                   <TableCell>
                     {columnKey === "actions" ? (
                       <div className="relative flex items-center gap-2">
-                        <Tooltip content="Actualizar usuario">
+                        <Tooltip content="Actualizar perfil">
                           <Button
                             as={Link}
                             color="primary"
-                            href={`${ROUTES.MANAGEMENT.USERS}/${user.id}`}
+                            href={`${ROUTES.MANAGEMENT.PROFILES}/${profile.id}`}
                             radius="full"
                             variant="light"
                             startContent={<EditIcon className="w-5 h-5" />}
                           />
                         </Tooltip>
-                        <Tooltip color="danger" content="Eliminar usuario">
+                        <Tooltip color="danger" content="Eliminar perfil">
                           <Button
                             className="flex"
                             variant="light"
                             radius="full"
                             onPress={() => {
-                              setUserIdToDelete(user.id);
+                              setUserIdToDelete(profile.id);
                               onOpen();
                             }}
                             startContent={
@@ -155,14 +154,8 @@ export default function UserTable() {
                           />
                         </Tooltip>
                       </div>
-                    ) : columnKey === "status" ? (
-                      <div className="flex items-center gap-2">
-                        <Button variant="flat" color={user.status === "Activo" ? "success": "danger"} radius="full">
-                          {getKeyValue(user, columnKey)}
-                        </Button>
-                      </div>
                     ) : (
-                      getKeyValue(user, columnKey)
+                      getKeyValue(profile, columnKey)
                     )}
                   </TableCell>
                 )}
@@ -177,7 +170,7 @@ export default function UserTable() {
         onClose={onClose}
         onConfirm={handleDelete}
         title="Confirmación de eliminación"
-        body="¿Estás seguro de que deseas eliminar este usuario?"
+        body="¿Estás seguro de que deseas eliminar este perfil?"
       />
     </>
   );

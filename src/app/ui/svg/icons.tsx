@@ -267,3 +267,71 @@ export const AddIcon = (props: IconSvgProps) => (
     />
   </svg>
 )
+
+export const UpdateIcon = (props: IconSvgProps) => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth={1.5}
+    className="size-6"
+    viewBox="0 0 24 24"
+    {...props}
+  >
+    <path
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182m0-4.991v4.99"
+    />
+  </svg>
+)
+
+
+export const SunIcon = (props: IconSvgProps) => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    fill="currentColor"
+    className="size-6"
+    viewBox="0 0 24 24"
+    {...props}
+  >
+    <path d="M12 2.25a.75.75 0 0 1 .75.75v2.25a.75.75 0 0 1-1.5 0V3a.75.75 0 0 1 .75-.75ZM7.5 12a4.5 4.5 0 1 1 9 0 4.5 4.5 0 0 1-9 0Zm11.394-5.834a.75.75 0 0 0-1.06-1.06l-1.591 1.59a.75.75 0 1 0 1.06 1.061l1.591-1.59ZM21.75 12a.75.75 0 0 1-.75.75h-2.25a.75.75 0 0 1 0-1.5H21a.75.75 0 0 1 .75.75Zm-3.916 6.894a.75.75 0 0 0 1.06-1.06l-1.59-1.591a.75.75 0 1 0-1.061 1.06l1.59 1.591ZM12 18a.75.75 0 0 1 .75.75V21a.75.75 0 0 1-1.5 0v-2.25A.75.75 0 0 1 12 18Zm-4.242-.697a.75.75 0 0 0-1.061-1.06l-1.591 1.59a.75.75 0 0 0 1.06 1.061l1.591-1.59ZM6 12a.75.75 0 0 1-.75.75H3a.75.75 0 0 1 0-1.5h2.25A.75.75 0 0 1 6 12Zm.697-4.243a.75.75 0 0 0 1.06-1.06l-1.59-1.591a.75.75 0 0 0-1.061 1.06l1.59 1.591Z" />
+  </svg>
+)
+
+export const MoonIcon= (props: IconSvgProps) => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth={1.5}
+    className="size-6"
+    viewBox="0 0 24 24"
+    {...props}
+  >
+    <path
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      d="M21.752 15.002A9.72 9.72 0 0 1 18 15.75 9.75 9.75 0 0 1 8.25 6c0-1.33.266-2.597.748-3.752A9.753 9.753 0 0 0 3 11.25 9.75 9.75 0 0 0 12.75 21a9.753 9.753 0 0 0 9.002-5.998Z"
+    />
+  </svg>
+)
+
+export const HomeIcon = (props: IconSvgProps) => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth={1.5}
+    className="size-6"
+    viewBox="0 0 24 24"
+    {...props}
+  >
+    <path
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      d="m2.25 12 8.954-8.955a1.126 1.126 0 0 1 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25"
+    />
+  </svg>
+)
+

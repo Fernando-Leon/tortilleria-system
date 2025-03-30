@@ -7,13 +7,13 @@ import { z } from 'zod';
 const userSchema = z.object({
   name: z.string().trim().min(2, { message: "El nombre debe tener como mínimo dos letras" }).refine(value => value.trim().length > 0, { message: "El nombre no puede estar vacío" }),
   password: z.string().trim().min(2, { message: "La contraseña debe tener como mínimo dos letras " }).refine(value => value.trim().length > 0, { message: "La contraseña no puede estar vacia" }),
-  roleId: z.number().int().positive({ message: "El rol es requerido" }),
+  profileId: z.number().int().positive({ message: "El perfil es requerido" }),
   statusId: z.number().int().positive({ message: "El estado es requerido" }),
 });
 
 const userSchemaUpdate = z.object({
   name: z.string().trim().min(2, { message: "El nombre debe tener como mínimo dos letras" }).refine(value => value.trim().length > 0, { message: "El nombre no puede estar vacío" }),
-  roleId: z.number().int().positive({ message: "El rol es requerido" }),
+  profileId: z.number().int().positive({ message: "El perfil es requerido" }),
   statusId: z.number().int().positive({ message: "El estado es requerido" }),
 });
 
@@ -25,7 +25,7 @@ export async function submitNewUser(prevState: ActionResponse | null, formData: 
     const rawData: UserFormData = {
       name: formData.get('name') as string,
       password: formData.get('password') as string,
-      roleId: Number(formData.get('roleId')),
+      profileId: Number(formData.get('profileId')),
       statusId: Number(formData.get('statusId')),
     };
 
@@ -41,7 +41,7 @@ export async function submitNewUser(prevState: ActionResponse | null, formData: 
     }
 
     // Send the data to the server
-    const response = await fetch("https://tortilleria-backend-production.up.railway.app/auth/register", {
+    const response = await fetch("http://localhost:3001/auth/register", {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -72,7 +72,7 @@ export async function updateUser(prevState: ActionResponseUpdate | null, formDat
     const rawData: UserUpdateFormData = {
       id: Number(formData.get("id")),
       name: formData.get("name") as string,
-      roleId: Number(formData.get("roleId")),
+      profileId: Number(formData.get("profileId")),
       statusId: Number(formData.get("statusId")),
     }
 
@@ -135,9 +135,9 @@ export async function getUsers(page = 1) {
   const paginatedUsers = users.slice((page - 1) * itemsPerPage, page * itemsPerPage);
 
   // Transformación de los usuarios para solo enviar el nombre del estado
-  const transformedUsers = paginatedUsers.map((user: { status: { name: string; }; role: { name: string } },) => ({
+  const transformedUsers = paginatedUsers.map((user: { status: { name: string; }; profile: { name: string } },) => ({
     ...user,
-    role: user.role.name, // Solo pasamos el `name` del role
+    profile: user.profile.name, // Solo pasamos el `name` del profile
     status: user.status.name, // Solo pasamos el `name` del status
   }));
 

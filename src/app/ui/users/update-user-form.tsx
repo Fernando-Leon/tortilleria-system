@@ -4,7 +4,7 @@ import type React from "react";
 
 import { useActionState, useEffect, useState } from "react";
 import { updateUser ,getUserById } from "@/app/lib/actions/users/user";
-import { getCatalogStatus, getCatalogRoles } from "@/app/lib/actions/catalogs/catalogs";
+import { getCatalogStatus, getCatalogPofiles } from "@/app/lib/actions/catalogs/catalogs";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import type { ActionResponseUpdate } from "@/app/types/user";
@@ -18,7 +18,7 @@ import {
   CardBody,
 } from "@heroui/react";
 import Link from "next/link";
-
+import ROUTES from "@/app/lib/routes/ROUTESPATH";
 
 const initialState: ActionResponseUpdate = {
   success: false,
@@ -29,7 +29,7 @@ interface FormUpdateUserProps {
   idUser: string;
 }
 
-export const FormUpdateUser: React.FC<FormUpdateUserProps> = ({ idUser }) => {
+export const FormUpdateUser: React.FC<FormUpdateUserProps> = ({ idUser: idUser }) => {
   const [state, action, isPending] = useActionState(
     updateUser,
     initialState
@@ -37,12 +37,12 @@ export const FormUpdateUser: React.FC<FormUpdateUserProps> = ({ idUser }) => {
   const [statusOptions, setStatusOptions] = useState<{ id: number; name: string }[]>(
     []
   );
-  const [roleOptions, setRoleOptions] = useState<{ id: number; name: string }[]>(
+  const [profileOptions, setProfileOptions] = useState<{ id: number; name: string }[]>(
     []
   );
   const [userData, setUserData] = useState({
     name: "",
-    roleId: "",
+    profileId: "",
     statusId: ""
   });
   const router = useRouter();
@@ -50,18 +50,18 @@ export const FormUpdateUser: React.FC<FormUpdateUserProps> = ({ idUser }) => {
   useEffect(() => {
     async function fetchData() {
       try {
-        const [roleOptions, statusOptions, userData] = await Promise.all([
-          getCatalogRoles(),
+        const [profileOptions, statusOptions, userData] = await Promise.all([
+          getCatalogPofiles(),
           getCatalogStatus(),
           getUserById(Number(idUser)),
         ]);
 
-        setRoleOptions(roleOptions);
+        setProfileOptions(profileOptions);
         setStatusOptions(statusOptions);
         console.log("User data fetched:", userData);
         setUserData({
             name: userData.name,
-            roleId: userData.role.id.toString(),
+            profileId: userData.profile.id.toString(),
             statusId: userData.status.id.toString()
           });
       } catch (error) {
@@ -75,7 +75,7 @@ export const FormUpdateUser: React.FC<FormUpdateUserProps> = ({ idUser }) => {
   useEffect(() => {
     if (state.success) {
       toast.success(state.message);
-      router.push("/dashboard/users");
+      router.push(ROUTES.MANAGEMENT.USERS);
     }
   }, [state.success, state.message, router]);
 
@@ -118,28 +118,28 @@ export const FormUpdateUser: React.FC<FormUpdateUserProps> = ({ idUser }) => {
             />
           </div>
           <div className="space-y-2">
-            <label htmlFor="roleId">Rol</label>
+            <label htmlFor="profileId">Perfil</label>
             <Select
               variant="bordered"
-              name="roleId"
+              name="profileId"
               isRequired
-              selectedKeys={[userData.roleId]}
+              selectedKeys={[userData.profileId]}
               onSelectionChange={(keys) =>
                 setUserData((prev) => ({
                   ...prev,
-                  roleId: Array.from(keys)[0] as string,
+                  profileId: Array.from(keys)[0] as string,
                 }))
               }
             >
-              {roleOptions.map((role) => (
-                <SelectItem key={role.id} value={role.id.toString()}>
-                  {role.name}
+              {profileOptions.map((profile) => (
+                <SelectItem key={profile.id} value={profile.id.toString()}>
+                  {profile.name}
                 </SelectItem>
               ))}
             </Select>
-            {state?.errors?.roleId && (
-              <p id="roleId-error" className="text-sm text-red-500">
-                {state.errors.roleId[0]}
+            {state?.errors?.profileId && (
+              <p id="profileId-error" className="text-sm text-red-500">
+                {state.errors.profileId[0]}
               </p>
             )}
           </div>
@@ -182,7 +182,7 @@ export const FormUpdateUser: React.FC<FormUpdateUserProps> = ({ idUser }) => {
               color="primary"
               variant="bordered"
               as={Link}
-              href="/dashboard/users"
+              href={ROUTES.MANAGEMENT.USERS}
               className="mt-4 w-1/2"
             >
               Regresar

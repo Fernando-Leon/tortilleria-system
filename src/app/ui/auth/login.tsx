@@ -1,21 +1,41 @@
-'use client'
-import React, { useState } from 'react';
-import { login } from '@/app/lib/actions/auth/auth';
-import Image from 'next/image';
-import Link from 'next/link';
-import { motion } from 'framer-motion';
-import { toast } from 'sonner';
+"use client"
+
+import React, { useState, useActionState, useEffect } from "react"
+import { login } from "@/app/lib/actions/auth/auth"
+import { useRouter } from "next/navigation";
+import type { ActionResponseLogin } from "@/app/types/user";
+import Image from "next/image"
+import Link from "next/link"
+import { motion } from "framer-motion"
 import { LampContainer } from '@/app/ui/components/lamp';
-import { EyeSlashFilledIcon, EyeFilledIcon } from '@/app/ui/svg/icons';
 import { Card, CardHeader, CardBody, Input, Button } from '@heroui/react';
-import { useTheme } from 'next-themes';
+import { EyeSlashFilledIcon, EyeFilledIcon } from '@/app/ui/svg/icons';
+import { useTheme } from "next-themes"
+import { toast } from "sonner";
+
+const initialState: ActionResponseLogin = {
+  success: false,
+  message: "",
+};
 
 export default function Login() {
+  const [state, action, isPending] = useActionState(
+    login,
+    initialState
+  )
   const [isVisible, setIsVisible] = useState(false);
   const toggleVisibility = () => setIsVisible(!isVisible);
-  const { theme } = useTheme();
+  const router = useRouter()
+  const { theme } = useTheme()
 
-  console.log(theme);
+  useEffect(() => {
+    if (state.success) {
+      router.push("/dashboard")
+    }
+    if(!state.success && state.message) {
+      toast.error(state.message)
+    }
+  }, [state, router])
 
   return (
     <div className="w-full h-full grid grid-cols-5 max-sm:flex">
@@ -39,46 +59,63 @@ export default function Login() {
             </CardHeader>
             <CardBody className="flex flex-col gap-4">
               <form
-                action={async (formData) => {
-                  const response = await login(formData);
-                  toast.error(response.error);
-                  console.log(response);
-                }}
-                className="flex flex-col gap-4"
-              >
-                <Input
-                  label="Usuario"
-                  type="text"
-                  name="username"
-                  variant="bordered"
-                />
-                <Input
-                  endContent={
-                    <button
-                      aria-label="toggle password visibility"
-                      className="focus:outline-none"
-                      type="button"
-                      onClick={toggleVisibility}
-                    >
-                      {isVisible ? (
-                        <EyeSlashFilledIcon className="text-2xl text-default-400 pointer-events-none" />
-                      ) : (
-                        <EyeFilledIcon className="text-2xl text-default-400 pointer-events-none" />
-                      )}
-                    </button>
-                  }
-                  label="Contraseña"
-                  type={isVisible ? 'text' : 'password'}
-                  name="password"
-                  variant="bordered"
-                />
+                action={action}
+                className="flex flex-col gap-4">
+                <div className="space-y-2">
+                  <label htmlFor="name" className="text-small opacity-75">Nombre usuario</label>
+                  <Input
+                    id="name"
+                    type="text"
+                    name="name"
+                    placeholder="tu nombre de usuario"
+                    variant="bordered"
+                    aria-describedby="name-error"
+                    className={state?.errors?.name ? "border-red-500" : ""}
+                  />
+                  {
+                    state?.errors?.name && (
+                      <p id="name-error" className="text-sm text-red-500">
+                        {state.errors.name}
+                      </p>
+                  )}
+                </div>
+                <div className="space-y-2">
+                  <label htmlFor="password" className="text-small opacity-75">Contraseña</label>
+                  <Input
+                    endContent={
+                      <button
+                        aria-label="toggle password visibility"
+                        className="focus:outline-none"
+                        type="button"
+                        onClick={toggleVisibility}
+                      >
+                        {isVisible ? (
+                          <EyeSlashFilledIcon className="text-2xl text-default-400 pointer-events-none" />
+                        ) : (
+                          <EyeFilledIcon className="text-2xl text-default-400 pointer-events-none" />
+                        )}
+                      </button>
+                    }
+                    id="password"
+                    placeholder="tu contraseña"
+                    type={isVisible ? 'text' : 'password'}
+                    name="password"
+                    variant="bordered"
+                  />
+                  {state?.errors?.password && (
+                    <p id="password-error" className="text-sm text-red-500">
+                      {state.errors.password}
+                    </p>
+                  )}
+                </div>
 
                 <Button
+                  isLoading={isPending}
                   type="submit"
                   color="primary"
                   className="w-full py-2 text-center transition"
                 >
-                  Iniciar sesión
+                  {isPending ? 'Iniciando sesión...' : 'Iniciar sesión'}
                 </Button>
               </form>
             </CardBody>
@@ -93,7 +130,7 @@ export default function Login() {
           </p>
         </div>
       </div>
-      <div className="col-span-3 relative max-sm:hidden">
+      <div className="col-span-3 relative max-sm:hidden"> 
         <LampContainer>
           <motion.h1
             initial={{ opacity: 0.5, y: 100 }}
@@ -110,5 +147,5 @@ export default function Login() {
         </LampContainer>
       </div>
     </div>
-  );
+  )
 }

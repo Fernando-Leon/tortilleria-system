@@ -1,7 +1,7 @@
 export interface UserFormData {
   name: string;
   password: string;
-  roleId: number;
+  profileId: number;
   statusId: number;
 }
 
@@ -16,7 +16,7 @@ export interface ActionResponse {
 export interface UserUpdateFormData {
   id: number;
   name: string;
-  roleId: number;
+  profileId: number;
   statusId: number;
 }
 
@@ -27,3 +27,16 @@ export interface ActionResponseUpdate {
     [K in keyof UserUpdateFormData]?: string[];
   };
 }
+
+export interface LoginFormData {
+  name: string;
+  password: string;
+}
+
+export interface ActionResponseLogin {
+  success: boolean;
+  message: string;
+  errors?: {
+    [K in keyof LoginFormData]?: string[];
+  };
+} 

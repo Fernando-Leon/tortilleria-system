@@ -1,4 +1,4 @@
-import Login from '@/app/ui/auth/login';
+import Login from "@/app/ui/auth/login"
 
 export default function Home() {
   return (

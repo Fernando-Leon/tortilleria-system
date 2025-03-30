@@ -15,3 +15,9 @@ export async function getCatalogRoles() {
   const CatalogOfRoles = await data.json();
   return CatalogOfRoles;
 }
+
+export async function getCatalogPofiles() {
+  const data = await fetch(apiRoutes.profile.getAllProfiles);
+  const CatalogOfProfiles = await data.json();
+  return CatalogOfProfiles;
+}

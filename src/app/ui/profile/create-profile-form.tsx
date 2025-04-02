@@ -74,7 +74,7 @@ export default function NewProfileForm() {
             name="description"
             variant="bordered"
             type="description"
-            placeholder="descripcion del perfil" 
+            placeholder="descripcion del perfiles" 
             minLength={2}
             maxLength={50}
             required

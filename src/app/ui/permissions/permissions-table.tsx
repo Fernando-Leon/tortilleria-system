@@ -28,6 +28,7 @@ interface Permissions {
   canDelete: boolean;
   profile: string;
   feature: string;
+  route?: string; // Added the 'route' property
 }
 
 interface Profile {
@@ -73,7 +74,7 @@ export default function PermissionsTable() {
 
       // Verificar permisos para la ruta de permisos
       const permissionsForRoute = allPermissions.find(
-        (perm) => perm.route === "/gestion/permissions"
+        (perm: Permissions) => perm.route === "/gestion/permissions"
       );
 
       setCanUpdate(permissionsForRoute?.canUpdate || false);

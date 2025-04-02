@@ -66,7 +66,7 @@ export default function UserTable() {
 
       // Filtrar permisos para la tabla de perfiles
       const profilePermissions = allPermissions.find(
-        (perm) => perm.route === "/gestion/profiles"
+        (perm: { route: string; canCreate?: boolean; canRead?: boolean; canUpdate?: boolean; canDelete?: boolean }) => perm.route === "/gestion/profiles"
       );
 
       setPermissions({

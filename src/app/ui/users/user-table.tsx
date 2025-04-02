@@ -68,7 +68,8 @@ export default function UserTable() {
 
       // Filtrar permisos para la tabla de usuarios
       const userPermissions = allPermissions.find(
-        (perm) => perm.route === "/ventas/facturacion/detalles/users"
+        (perm: { route: string; canCreate?: boolean; canRead?: boolean; canUpdate?: boolean; canDelete?: boolean }) =>
+          perm.route === "/ventas/facturacion/detalles/users"
       );
 
       setPermissions({

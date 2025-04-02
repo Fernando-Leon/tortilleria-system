@@ -74,9 +74,9 @@ export default function NewProfileForm() {
             name="description"
             variant="bordered"
             type="description"
-            placeholder="tu_contraseña" 
+            placeholder="descripcion del perfil" 
             minLength={2}
-            maxLength={20}
+            maxLength={50}
             required
             aria-describedby="description-error"
             className={state?.errors?.description ? "border-red-500" : ""}

@@ -224,7 +224,7 @@ export default function NavBar() {
                 <ChevronDown className="text-small w-4 h-4 -rotate-90" />
               </div>
             </DropdownTrigger>
-            <DropdownMenu aria-label={item.name} onClose={(e) => e.stopPropagation()} closeOnSelect={false}>
+            <DropdownMenu aria-label={item.name} onClose={() => {}} closeOnSelect={false}>
               {item.children.map((childGroup) => (
                 <React.Fragment key={childGroup.title}>
                   {childGroup.items.map((childItem) => renderNestedMenuItem(childItem))}

@@ -8,7 +8,7 @@ interface SessionPayload {
   userId: string
   token: string
   name: string
-  [key: string]: any
+  [key: string]: unknown
 }
 
 const secretKey = process.env.SESSION_SECRET

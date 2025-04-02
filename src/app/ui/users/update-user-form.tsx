@@ -75,7 +75,7 @@ export const FormUpdateUser: React.FC<FormUpdateUserProps> = ({ idUser: idUser }
   useEffect(() => {
     if (state.success) {
       toast.success(state.message);
-      router.push(ROUTES.MANAGEMENT.USERS);
+      router.push(ROUTES.VENTAS.USERS);
     }
   }, [state.success, state.message, router]);
 
@@ -182,7 +182,7 @@ export const FormUpdateUser: React.FC<FormUpdateUserProps> = ({ idUser: idUser }
               color="primary"
               variant="bordered"
               as={Link}
-              href={ROUTES.MANAGEMENT.USERS}
+              href={ROUTES.VENTAS.USERS}
               className="mt-4 w-1/2"
             >
               Regresar

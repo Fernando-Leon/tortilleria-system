@@ -20,6 +20,8 @@ import { EditIcon, DeleteIcon, SearchIcon, AddIcon } from "@/app/ui/svg/icons";
 import { toast } from "sonner";
 import Link from "next/link";
 import ROUTES from "@/app/lib/routes/ROUTESPATH";
+import { getSession } from "@/app/lib/actions/auth/sessions";
+import { getPermissionsByUserId } from "@/app/lib/actions/auth/auth";
 
 interface Profile {
   id: string;
@@ -40,6 +42,12 @@ export default function UserTable() {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [profileIdToDelete, setUserIdToDelete] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
+  const [permissions, setPermissions] = useState({
+    canCreate: false,
+    canRead: false,
+    canUpdate: false,
+    canDelete: false,
+  });
 
   const filteredProfiles = profiles.filter((user) =>
     user.name.toLowerCase().includes(searchTerm.toLowerCase())
@@ -52,6 +60,22 @@ export default function UserTable() {
   async function fetchData(page: number) {
     try {
       const { data, totalPages } = await getProfiles(page);
+      const session = await getSession();
+      const userId = session?.userId ? Number.parseInt(session.userId, 10) : undefined;
+      const allPermissions = userId ? await getPermissionsByUserId(userId) : [];
+
+      // Filtrar permisos para la tabla de perfiles
+      const profilePermissions = allPermissions.find(
+        (perm) => perm.route === "/gestion/profiles"
+      );
+
+      setPermissions({
+        canCreate: profilePermissions?.canCreate || false,
+        canRead: profilePermissions?.canRead || false,
+        canUpdate: profilePermissions?.canUpdate || false,
+        canDelete: profilePermissions?.canDelete || false,
+      });
+
       setProfiles(data);
       setTotalPages(totalPages);
     } catch (error) {
@@ -95,14 +119,16 @@ export default function UserTable() {
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
-          <Button
-            as={Link}
-            startContent={<AddIcon />}
-            color="primary"
-            href={`${ROUTES.MANAGEMENT.PROFILES}/create`}
-          >
-            Crear perfil
-          </Button>
+          {permissions.canCreate && (
+            <Button
+              as={Link}
+              startContent={<AddIcon />}
+              color="primary"
+              href={`${ROUTES.MANAGEMENT.PROFILES}/create`}
+            >
+              Crear perfil
+            </Button>
+          )}
         </div>
         <Table
           aria-label="Tabla de perfiles"
@@ -129,30 +155,34 @@ export default function UserTable() {
                   <TableCell>
                     {columnKey === "actions" ? (
                       <div className="relative flex items-center gap-2">
-                        <Tooltip content="Actualizar perfil">
-                          <Button
-                            as={Link}
-                            color="primary"
-                            href={`${ROUTES.MANAGEMENT.PROFILES}/${profile.id}`}
-                            radius="full"
-                            variant="light"
-                            startContent={<EditIcon className="w-5 h-5" />}
-                          />
-                        </Tooltip>
-                        <Tooltip color="danger" content="Eliminar perfil">
-                          <Button
-                            className="flex"
-                            variant="light"
-                            radius="full"
-                            onPress={() => {
-                              setUserIdToDelete(profile.id);
-                              onOpen();
-                            }}
-                            startContent={
-                              <DeleteIcon className="w-5 h-5 text-danger" />
-                            }
-                          />
-                        </Tooltip>
+                        {permissions.canUpdate && (
+                          <Tooltip content="Actualizar perfil">
+                            <Button
+                              as={Link}
+                              color="primary"
+                              href={`${ROUTES.MANAGEMENT.PROFILES}/${profile.id}`}
+                              radius="full"
+                              variant="light"
+                              startContent={<EditIcon className="w-5 h-5" />}
+                            />
+                          </Tooltip>
+                        )}
+                        {permissions.canDelete && (
+                          <Tooltip color="danger" content="Eliminar perfil">
+                            <Button
+                              className="flex"
+                              variant="light"
+                              radius="full"
+                              onPress={() => {
+                                setUserIdToDelete(profile.id);
+                                onOpen();
+                              }}
+                              startContent={
+                                <DeleteIcon className="w-5 h-5 text-danger" />
+                              }
+                            />
+                          </Tooltip>
+                        )}
                       </div>
                     ) : (
                       getKeyValue(profile, columnKey)

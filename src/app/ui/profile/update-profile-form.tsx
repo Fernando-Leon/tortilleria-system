@@ -7,6 +7,7 @@ import { updateProfile, getProfileById } from "@/app/lib/actions/profile/profile
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import type { ActionResponseProfileUpdate } from "@/app/types/profile";
+import ROUTES from "@/app/lib/routes/ROUTESPATH";
 import {
   Button,
   Input,
@@ -62,7 +63,7 @@ export const FormUpdateProfile: React.FC<FormUpdateProfileProps> = ({ idprofile:
   useEffect(() => {
     if (state.success) {
       toast.success(state.message);
-      router.push("/dashboard/profiles");
+      router.push(ROUTES.MANAGEMENT.PROFILES);
     }
   }, [state.success, state.message, router]);
 
@@ -133,7 +134,7 @@ export const FormUpdateProfile: React.FC<FormUpdateProfileProps> = ({ idprofile:
               color="primary"
               variant="bordered"
               as={Link}
-              href="/dashboard/profiles"
+              href={ROUTES.MANAGEMENT.PROFILES}
               className="mt-4 w-1/2"
             >
               Regresar

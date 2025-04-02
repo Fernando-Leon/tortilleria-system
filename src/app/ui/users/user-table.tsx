@@ -20,11 +20,14 @@ import { EditIcon, DeleteIcon, SearchIcon, AddIcon } from "@/app/ui/svg/icons";
 import { toast } from "sonner";
 import Link from "next/link";
 import ROUTES from "@/app/lib/routes/ROUTESPATH";
+import { getSession } from "@/app/lib/actions/auth/sessions";
+import { getPermissionsByUserId } from "@/app/lib/actions/auth/auth";
+
 interface User {
   id: string;
   name: string;
-  profile: string;
-  status: string;
+  profile: { id: number; name: string; description: string };
+  status: { id: number; name: string; description: string };
 }
 
 const columns = [
@@ -41,6 +44,12 @@ export default function UserTable() {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [userIdToDelete, setUserIdToDelete] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
+  const [permissions, setPermissions] = useState({
+    canCreate: false,
+    canRead: false,
+    canUpdate: false,
+    canDelete: false,
+  });
 
   const filteredUsers = users.filter((user) =>
     user.name.toLowerCase().includes(searchTerm.toLowerCase())
@@ -53,6 +62,22 @@ export default function UserTable() {
   async function fetchData(page: number) {
     try {
       const { data, totalPages } = await getUsers(page);
+      const session = await getSession();
+      const userId = session?.userId ? Number.parseInt(session.userId, 10) : undefined;
+      const allPermissions = userId ? await getPermissionsByUserId(userId) : [];
+
+      // Filtrar permisos para la tabla de usuarios
+      const userPermissions = allPermissions.find(
+        (perm) => perm.route === "/ventas/facturacion/detalles/users"
+      );
+
+      setPermissions({
+        canCreate: userPermissions?.canCreate || false,
+        canRead: userPermissions?.canRead || false,
+        canUpdate: userPermissions?.canUpdate || false,
+        canDelete: userPermissions?.canDelete || false,
+      });
+
       setUsers(data);
       setTotalPages(totalPages);
     } catch (error) {
@@ -96,14 +121,16 @@ export default function UserTable() {
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
-          <Button
-            as={Link}
-            startContent={<AddIcon />}
-            color="primary"
-            href={`${ROUTES.MANAGEMENT.USERS}/create`}
-          >
-            Crear usuario
-          </Button>
+          {permissions.canCreate && (
+            <Button
+              as={Link}
+              startContent={<AddIcon />}
+              color="primary"
+              href={`${ROUTES.VENTAS.USERS}/create`}
+            >
+              Crear usuario
+            </Button>
+          )}
         </div>
         <Table
           aria-label="Tabla de usuarios"
@@ -130,34 +157,42 @@ export default function UserTable() {
                   <TableCell>
                     {columnKey === "actions" ? (
                       <div className="relative flex items-center gap-2">
-                        <Tooltip content="Actualizar usuario">
-                          <Button
-                            as={Link}
-                            color="primary"
-                            href={`${ROUTES.MANAGEMENT.USERS}/${user.id}`}
-                            radius="full"
-                            variant="light"
-                            startContent={<EditIcon className="w-5 h-5" />}
-                          />
-                        </Tooltip>
-                        <Tooltip color="danger" content="Eliminar usuario">
-                          <Button
-                            className="flex"
-                            variant="light"
-                            radius="full"
-                            onPress={() => {
-                              setUserIdToDelete(user.id);
-                              onOpen();
-                            }}
-                            startContent={
-                              <DeleteIcon className="w-5 h-5 text-danger" />
-                            }
-                          />
-                        </Tooltip>
+                        {permissions.canUpdate && (
+                          <Tooltip content="Actualizar usuario">
+                            <Button
+                              as={Link}
+                              color="primary"
+                              href={`${ROUTES.VENTAS.USERS}/${user.id}`}
+                              radius="full"
+                              variant="light"
+                              startContent={<EditIcon className="w-5 h-5" />}
+                            />
+                          </Tooltip>
+                        )}
+                        {permissions.canDelete && (
+                          <Tooltip color="danger" content="Eliminar usuario">
+                            <Button
+                              className="flex"
+                              variant="light"
+                              radius="full"
+                              onPress={() => {
+                                setUserIdToDelete(user.id);
+                                onOpen();
+                              }}
+                              startContent={
+                                <DeleteIcon className="w-5 h-5 text-danger" />
+                              }
+                            />
+                          </Tooltip>
+                        )}
                       </div>
                     ) : columnKey === "status" ? (
                       <div className="flex items-center gap-2">
-                        <Button variant="flat" color={user.status === "Activo" ? "success": "danger"} radius="full">
+                        <Button
+                          variant="flat"
+                          color={user.status.name === "Activo" ? "success" : "danger"}
+                          radius="full"
+                        >
                           {getKeyValue(user, columnKey)}
                         </Button>
                       </div>

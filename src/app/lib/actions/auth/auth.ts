@@ -2,7 +2,8 @@
 
 import apiRoutes from "@/app/lib/routes/routes"
 import type { LoginFormData, ActionResponseLogin } from "@/app/types/user"
-import { createSession, deleteSession, getSession } from "@/app/lib/actions/auth/sessions"
+import { createSession, deleteSession } from "@/app/lib/actions/auth/sessions"
+import { getSession } from "@/app/lib/actions/auth/sessions"
 import { redirect } from "next/navigation"
 
 import { z } from "zod"
@@ -42,7 +43,7 @@ export async function login(prevState: ActionResponseLogin, formData: FormData):
       }
     }
 
-    const response = await fetch(apiRoutes.auth.login, {
+    const response = await fetch('https://tortilleria-backend-production-67b0.up.railway.app/auth/login', {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -63,16 +64,21 @@ export async function login(prevState: ActionResponseLogin, formData: FormData):
     await createSession(result.userId, result.token, result.name)
 
     const session = await getSession()
-    console.log("🔐 Session created:", session?.name)
 
-    return { 
-        success: true, 
-        message: result.message,
-    }
+    console.log("Session created: ", session)
+
+    
+
+    // return { 
+    //     success: true, 
+    //     message: result.message,
+    // }
   } catch (error) {
     console.error("💥 Server Action: Unexpected error during login:", error)
     return { success: false, message: "An error occurred during login" }
   }
+
+  redirect("/dashboard");
 }
 
 export async function logout() {

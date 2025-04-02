@@ -51,7 +51,7 @@ export default function NewUserForm() {
   useEffect(() => {
     if (state.success) {
       toast.success(state.message);
-      router.push(ROUTES.MANAGEMENT.USERS);
+      router.push(ROUTES.VENTAS.USERS);
     }
   }, [state.success, state.message, router]);
 
@@ -165,7 +165,7 @@ export default function NewUserForm() {
               color="primary"
               variant="bordered"
               as={Link}
-              href={ROUTES.MANAGEMENT.USERS}
+              href={ROUTES.VENTAS.USERS}
               className="mt-4 w-1/2"
             >
               Regresar

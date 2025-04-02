@@ -34,7 +34,13 @@ export default function RouteGuard({ children, route }: RouteGuardProps) {
       const baseRoute = "/dashboard/management/profiles";
       const isChildRoute = route.startsWith(baseRoute);
 
-      const routePermission = permissions.find((p: any) => `/dashboard${p.route}` === baseRoute);
+      interface Permission {
+        route: string;
+        canRead: boolean;
+        // Add other properties if necessary
+      }
+
+      const routePermission = permissions.find((p: Permission) => `/dashboard${p.route}` === baseRoute);
       console.log("Permiso encontrado para la ruta base:", routePermission); // Muestra el permiso encontrado para la ruta base
 
       if (isChildRoute && !routePermission?.canRead) {

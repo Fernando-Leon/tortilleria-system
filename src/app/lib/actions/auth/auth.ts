@@ -24,7 +24,7 @@ const authSchema = z.object({
     }),
 })
 
-export async function login(prevState: ActionResponseLogin, formData: FormData): Promise<ActionResponseLogin> {
+export async function login(formData: FormData): Promise<ActionResponseLogin> {
 
   try {
     const rawData: LoginFormData = {
@@ -43,6 +43,14 @@ export async function login(prevState: ActionResponseLogin, formData: FormData):
     }
 
     console.log("Data to send: ", validatedData.data)
+    if (!validatedData.data.name || !validatedData.data.password) {
+      return {
+        success: false,
+        message: "El nombre y la contraseña no pueden estar vacíos",
+        errors: {},
+      };
+    }
+
     const response = await fetch('https://tortilleria-backend-production-67b0.up.railway.app/auth/login', {
       method: "POST",
       headers: {

@@ -42,6 +42,7 @@ export async function login(prevState: ActionResponseLogin, formData: FormData):
       }
     }
 
+    console.log("Data to send: ", validatedData.data)
     const response = await fetch('https://tortilleria-backend-production-67b0.up.railway.app/auth/login', {
       method: "POST",
       headers: {
@@ -49,6 +50,8 @@ export async function login(prevState: ActionResponseLogin, formData: FormData):
       },
       body: JSON.stringify(validatedData.data),
     })
+
+    console.log("Response: ", response);
 
     const result = await response.json();
 

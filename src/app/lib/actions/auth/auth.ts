@@ -1,6 +1,5 @@
 "use server"
 
-import apiRoutes from "@/app/lib/routes/routes"
 import type { LoginFormData, ActionResponseLogin } from "@/app/types/user"
 import { createSession, deleteSession } from "@/app/lib/actions/auth/sessions"
 import { getSession } from "@/app/lib/actions/auth/sessions"
@@ -87,7 +86,7 @@ export async function logout() {
 }
 
 export async function getPermissionsByUserId(id: number) {
-  const response = await fetch(apiRoutes.auth.getPermissionsByUserId(id), {
+  const response = await fetch(`https://tortilleria-backend-production-67b0.up.railway.app/auth/permissions/${id}`, {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
